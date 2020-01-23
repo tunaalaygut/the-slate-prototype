@@ -1,4 +1,4 @@
-# Skin Detection using webcam.
+# Skin Detection using webcam. Color-based approach. Calibration based on user's skin tone.
 import cv2
 import numpy
 import sdu
@@ -6,6 +6,11 @@ import sdu
 #Global variables
 LOW_THRESHOLD = []
 HIGH_THRESHOLD = []
+
+# Experimental offset values.
+offsetLow = 50
+offsetHigh = 30
+OFFSET_UPDATE_AMOUNT = 5
 
 SAMPLE_1 = []
 SAMPLE_2 = []
@@ -19,7 +24,9 @@ calibrated = False
 def get_webcam_feed():
 	global calibrated, SAMPLE_1, SAMPLE_2
 	webcam = cv2.VideoCapture(0)	#Source is 0, can be passed as an argument to the program.
-	print("Webcam feed started.")
+	print("\nWelcome to Slate's Skin Detector...\nWebcam feed started.")
+	sdu.print_dashed_line()
+	
 	while True:
 	
 		captured, webcamImage = webcam.read()
@@ -36,7 +43,7 @@ def get_webcam_feed():
 			# BELOW CODE IS NOT MINE!!!!
 			# apply a series of erosions and dilations to the mask	
 			# using an elliptical kernel
-			kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+			kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
 			mask = cv2.erode(mask, kernel, iterations = 2)
 			mask = cv2.dilate(mask, kernel, iterations = 2)
 			mask = cv2.GaussianBlur(mask, (3, 3), 0)
@@ -69,16 +76,44 @@ def get_webcam_feed():
 					SAMPLE_2 = sdu.set_sample(webcamImage, sampleAreaTwoPosition)
 					print("Sample image 2 is set.") 
 					calibrate_user_skin_tone()
+		update_offsets(key, OFFSET_UPDATE_AMOUNT)
 	
 	cv2.destroyAllWindows()
 	
-def calibrate_user_skin_tone():
-	global calibrated, LOW_THRESHOLD, HIGH_THRESHOLD
-	
-	# Experimental offset values.
-	offsetLow = 80
-	offsetHigh = 30
+# Updates the THRESHOLDs based on user input
+def update_offsets(key, amount):
+	global offsetLow, offsetHigh, LOW_THRESHOLD, HIGH_THRESHOLD
 
+	if key == 121 or key == 104 or key == 117 or key == 106:
+		# First undo the current offset
+		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] + offsetLow, LOW_THRESHOLD[1] + offsetLow, 0], dtype="uint8")
+		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] - offsetHigh, HIGH_THRESHOLD[1] - offsetHigh, 255], dtype="uint8")
+
+		if key == 121: #y, increase offsetLow
+			offsetLow = offsetLow + amount
+		if key == 104: #h, decrease offsetLow
+			offsetLow = offsetLow - amount
+		if key == 117: #u, increase offsetHigh
+			offsetHigh = offsetHigh + amount
+		if key == 106: #j, decrease offsetHigh
+			offsetHigh = offsetHigh - amount	
+		
+		# Apply the new offset
+		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] - offsetLow, LOW_THRESHOLD[1] - offsetLow, 0], dtype="uint8")
+		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] + offsetHigh, HIGH_THRESHOLD[1] + offsetHigh, 255], dtype="uint8")
+		
+		print("Offsets and thresholds updated.")
+		sdu.print_dashed_line()
+		print("New low threshold:\t" + str(LOW_THRESHOLD))
+		print("New high threshold:\t" + str(HIGH_THRESHOLD))
+		print("New low offset:\t" + str(offsetLow))
+		print("New high offset:\t" + str(offsetHigh))
+
+def calibrate_user_skin_tone():
+	global calibrated, LOW_THRESHOLD, HIGH_THRESHOLD, offsetLow, offsetHigh
+	print("Calibrating to user's skin tone.")
+	sdu.print_dashed_line()
+	
 	# Make the calibration calculations here	
 	sampleOneImage = cv2.cvtColor(SAMPLE_1, COLOR_SPACE)
 	sampleTwoImage = cv2.cvtColor(SAMPLE_2, COLOR_SPACE)
@@ -90,21 +125,23 @@ def calibrate_user_skin_tone():
 	# Necessary calculations for HSV color space.
 	if(COLOR_SPACE == hsv):
 		sampleOne_H = sampleOneChannels[0] 
-		sampleOne_S = sampleOneChannels[1] 
-		sampleOne_V = sampleOneChannels[2] 
+		sampleOne_S = sampleOneChannels[1]
+		sampleOne_V = 0 # or normalize(sampleOneChannels[2])
 		
 		sampleTwo_H = sampleTwoChannels[0] 
-		sampleTwo_S = sampleTwoChannels[1] 
-		sampleTwo_V = sampleTwoChannels[2] 
+		sampleTwo_S = sampleTwoChannels[1]
+		sampleTwo_V = 255 # or normalize(sampleTwoChannels[2])
 
-		LOW_THRESHOLD = numpy.array([min(sampleOne_H, sampleTwo_H) - offsetLow, min(sampleOne_S, sampleTwo_S) - offsetLow, 0])
-		HIGH_THRESHOLD = numpy.array([max(sampleOne_H, sampleTwo_H) + offsetHigh, max(sampleOne_S, sampleTwo_S) + offsetHigh, 255])
+		LOW_THRESHOLD = numpy.array([sdu.fit_to_0_255(sampleOne_H, sampleTwo_H, offsetLow, False), sdu.fit_to_0_255(sampleOne_S, sampleTwo_S, offsetLow, False), 0], dtype="uint8")
+		HIGH_THRESHOLD = numpy.array([sdu.fit_to_0_255(sampleOne_H, sampleTwo_H, offsetHigh, True), sdu.fit_to_0_255(sampleOne_S, sampleTwo_S, offsetHigh, True), 255], dtype="uint8")
 	
-	# Information is printed.
-	print("Sample one channels: " + str(sampleOneChannels))
-	print("Sample two channels: " + str(sampleTwoChannels))
-	print("Low Threshold: " + str(LOW_THRESHOLD))
-	print("High Threshold: " + str(HIGH_THRESHOLD))
+	# Threshold Information is printed.
+	print("Calibration is done.\n")
+	sdu.print_dashed_line()
+	print("Low Offset:\t" + str(offsetLow))
+	print("High Offset:\t" + str(offsetHigh))
+	print("Low Threshold:\t" + str(LOW_THRESHOLD))
+	print("High Threshold:\t" + str(HIGH_THRESHOLD))
 	calibrated = True
 
 def main():

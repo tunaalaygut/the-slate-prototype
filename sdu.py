@@ -41,6 +41,25 @@ def get_bottom_right(position):
 def is_sample_set(sample):
 	return len(sample) != 0
 	
+# Given two numbers, makes the offset calculation and fits the result between [0-255].
+# isAddition: whether the offset will be added or not.
+def fit_to_0_255(a, b, offset, isAddition):
+	if not isAddition:
+		offset = -1 * offset
+		func = min
+	else:
+		func = max
+	
+	return get_uint8( func(a, b) + offset)
+
+# Takes a number fits it to 8 bit.
+def get_uint8(number):
+	if(number < 0):
+		return 0
+	if(number > 255):
+		return 255
+	return number	
+
 # Returns a portion, with the given position(top left and bottom right), of an image.
 def get_portion(image, position):
 
@@ -51,7 +70,10 @@ def get_portion(image, position):
 	bottomRightY = get_bottom_right(position)[1];
 
 	return image[topLeftY + 2 : bottomRightY - 2, topLeftX + 2 : bottomRightX - 2]
-	
+
+# Prints a dashed line and a new line.
+def print_dashed_line():
+	print("-----------------------\n")
 
 # Extracts the sample image from its position
 def set_sample(image, sampleAreaPosition):
