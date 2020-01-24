@@ -1,5 +1,6 @@
 #Skin Detection Utilities (sdu) by Tuna ALAYGUT 20.01.2020
 import cv2
+import numpy
 
 #Draws a sampling rectangle on a frame and returns the frame and rectangle position.
 def draw_sample_rectangle(image, number):
@@ -79,5 +80,19 @@ def print_dashed_line():
 def set_sample(image, sampleAreaPosition):
 	return get_portion(image, sampleAreaPosition)
 	
+# Calculates and returns the lower and higher threshold with given channels and offsets
+def calculate_thresholds_from_channels(sampleOneChannels, sampleTwoChannels, offsetLow, offsetHigh):
+	sampleOne_c1 = sampleOneChannels[0] 
+	sampleOne_c2 = sampleOneChannels[1]
+	sampleOne_c3 = sampleOneChannels[2]
+	
+	sampleTwo_c1 = sampleTwoChannels[0] 
+	sampleTwo_c2 = sampleTwoChannels[1]
+	sampleTwo_c3 = sampleTwoChannels[2]
+
+	LOW_THRESHOLD = numpy.array([fit_to_0_255(sampleOne_c1, sampleTwo_c1, offsetLow, False), fit_to_0_255(sampleOne_c2, sampleTwo_c2, offsetLow, False), fit_to_0_255(sampleOne_c3, sampleTwo_c3, offsetLow, False)], dtype="uint8")
+	HIGH_THRESHOLD = numpy.array([fit_to_0_255(sampleOne_c1, sampleTwo_c1, offsetHigh, True), fit_to_0_255(sampleOne_c2, sampleTwo_c2, offsetHigh, True), fit_to_0_255(sampleOne_c3, sampleTwo_c3, offsetLow, True)], dtype="uint8")
+	
+	return (LOW_THRESHOLD, HIGH_THRESHOLD)
 	
 	

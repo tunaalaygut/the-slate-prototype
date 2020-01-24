@@ -2,13 +2,15 @@
 import cv2
 import numpy
 import sdu
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
 #Global variables
 LOW_THRESHOLD = []
 HIGH_THRESHOLD = []
 
 # Experimental offset values.
-offsetLow = 50
+offsetLow = 20
 offsetHigh = 30
 OFFSET_UPDATE_AMOUNT = 5
 
@@ -18,7 +20,7 @@ SAMPLE_2 = []
 ycrcb = cv2.COLOR_BGR2YCrCb
 hsv = cv2.COLOR_BGR2HSV
 
-COLOR_SPACE = hsv
+COLOR_SPACE = ycrcb
 calibrated = False
 
 def get_webcam_feed():
@@ -43,7 +45,7 @@ def get_webcam_feed():
 			# BELOW CODE IS NOT MINE!!!!
 			# apply a series of erosions and dilations to the mask	
 			# using an elliptical kernel
-			kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+			kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
 			mask = cv2.erode(mask, kernel, iterations = 2)
 			mask = cv2.dilate(mask, kernel, iterations = 2)
 			mask = cv2.GaussianBlur(mask, (3, 3), 0)
@@ -86,21 +88,21 @@ def update_offsets(key, amount):
 
 	if key == 121 or key == 104 or key == 117 or key == 106:
 		# First undo the current offset
-		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] + offsetLow, LOW_THRESHOLD[1] + offsetLow, 0], dtype="uint8")
-		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] - offsetHigh, HIGH_THRESHOLD[1] - offsetHigh, 255], dtype="uint8")
+		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] + offsetLow, LOW_THRESHOLD[1] + offsetLow, LOW_THRESHOLD[2] + offsetLow], dtype="uint8")
+		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] - offsetHigh, HIGH_THRESHOLD[1] - offsetHigh, HIGH_THRESHOLD[2] - offsetHigh], dtype="uint8")
 
-		if key == 121: #y, increase offsetLow
+		if key == 121 and (offsetLow + amount) <= 255: #y, increase offsetLow
 			offsetLow = offsetLow + amount
-		if key == 104: #h, decrease offsetLow
+		if key == 104 and (offsetLow - amount) >= 0: #h, decrease offsetLow
 			offsetLow = offsetLow - amount
-		if key == 117: #u, increase offsetHigh
+		if key == 117 and (offsetHigh + amount) <= 255: #u, increase offsetHigh
 			offsetHigh = offsetHigh + amount
-		if key == 106: #j, decrease offsetHigh
+		if key == 106 and (offsetHigh - amount) >= 0: #j, decrease offsetHigh
 			offsetHigh = offsetHigh - amount	
 		
 		# Apply the new offset
-		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] - offsetLow, LOW_THRESHOLD[1] - offsetLow, 0], dtype="uint8")
-		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] + offsetHigh, HIGH_THRESHOLD[1] + offsetHigh, 255], dtype="uint8")
+		LOW_THRESHOLD = numpy.array([LOW_THRESHOLD[0] - offsetLow, LOW_THRESHOLD[1] - offsetLow, LOW_THRESHOLD[2] - offsetLow], dtype="uint8")
+		HIGH_THRESHOLD = numpy.array([HIGH_THRESHOLD[0] + offsetHigh, HIGH_THRESHOLD[1] + offsetHigh, HIGH_THRESHOLD[2] + offsetHigh], dtype="uint8")
 		
 		print("Offsets and thresholds updated.")
 		sdu.print_dashed_line()
@@ -110,7 +112,7 @@ def update_offsets(key, amount):
 		print("New high offset:\t" + str(offsetHigh))
 
 def calibrate_user_skin_tone():
-	global calibrated, LOW_THRESHOLD, HIGH_THRESHOLD, offsetLow, offsetHigh
+	global calibrated, LOW_THRESHOLD, HIGH_THRESHOLD
 	print("Calibrating to user's skin tone.")
 	sdu.print_dashed_line()
 	
@@ -118,22 +120,20 @@ def calibrate_user_skin_tone():
 	sampleOneImage = cv2.cvtColor(SAMPLE_1, COLOR_SPACE)
 	sampleTwoImage = cv2.cvtColor(SAMPLE_2, COLOR_SPACE)
 	
-	# Find a proper way to find the mean, K-means clustering?
-	sampleOneChannels = cv2.mean(sampleOneImage)
-	sampleTwoChannels = cv2.mean(sampleTwoImage)
+	# Display the sample images ?
+	cv2.imshow("Sample 1", sampleOneImage)
+	cv2.imshow("Sample 2", sampleTwoImage)
 	
-	# Necessary calculations for HSV color space.
-	if(COLOR_SPACE == hsv):
-		sampleOne_H = sampleOneChannels[0] 
-		sampleOne_S = sampleOneChannels[1]
-		sampleOne_V = 0 # or normalize(sampleOneChannels[2])
-		
-		sampleTwo_H = sampleTwoChannels[0] 
-		sampleTwo_S = sampleTwoChannels[1]
-		sampleTwo_V = 255 # or normalize(sampleTwoChannels[2])
-
-		LOW_THRESHOLD = numpy.array([sdu.fit_to_0_255(sampleOne_H, sampleTwo_H, offsetLow, False), sdu.fit_to_0_255(sampleOne_S, sampleTwo_S, offsetLow, False), 0], dtype="uint8")
-		HIGH_THRESHOLD = numpy.array([sdu.fit_to_0_255(sampleOne_H, sampleTwo_H, offsetHigh, True), sdu.fit_to_0_255(sampleOne_S, sampleTwo_S, offsetHigh, True), 255], dtype="uint8")
+	(LOW_THRESHOLD, HIGH_THRESHOLD) = sdu.calculate_thresholds_from_channels(cv2.mean(sampleOneImage), cv2.mean(sampleTwoImage), offsetLow, offsetHigh)
+	
+	# Ignore V in HSV color space
+	if COLOR_SPACE == hsv:
+		LOW_THRESHOLD[2] = 0
+		HIGH_THRESHOLD[2] = 255
+	# A heuristic value for Y component in YCrCb color space
+	if COLOR_SPACE == ycrcb:
+		LOW_THRESHOLD[0] = 0
+		HIGH_THRESHOLD[0] = 235
 	
 	# Threshold Information is printed.
 	print("Calibration is done.\n")
