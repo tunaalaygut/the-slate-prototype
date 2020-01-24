@@ -10,7 +10,7 @@ def draw_sample_rectangle(image, number):
 
 	if number == 1:
 		rectStartPoint = (25, 25)
-		rectEndPoint = (rectStartPoint[0] + rectSize, rectStartPoint[0] + rectSize)
+		rectEndPoint = (rectStartPoint[0] + rectSize, rectStartPoint[1] + rectSize)
 		rectColor = (139, 0, 139)
 	else:	# Assume that there can only be two sample areas, either 1 or 2
 		rectStartPoint = (width-(25 + rectSize), 25)
@@ -24,6 +24,28 @@ def draw_sample_rectangle(image, number):
 	rectTextBottomLeft = (rectStartPoint[0], rectEndPoint[1] + 15)
 	rectTextFont = cv2.FONT_HERSHEY_SIMPLEX
 	rectTextScale = 0.35
+	rectTextColor = rectColor
+	rectTextThickness = 1
+	rectTextLineType = cv2.LINE_AA
+
+	image = cv2.putText(image, rectText, rectTextBottomLeft, rectTextFont, rectTextScale, rectTextColor, rectTextThickness, rectTextLineType)
+	return (cv2.rectangle(image, rectStartPoint, rectEndPoint, rectColor, rectThickness), position)
+	
+def draw_prediction_rectangle(image):
+	(height, width, depth) = image.shape
+	rectSize = 300
+	
+	rectStartPoint = (100, 100)
+	rectEndPoint = (rectStartPoint[0] + rectSize, rectStartPoint[1] + rectSize)
+	rectColor = (255, 0, 0)
+	
+	position = (rectStartPoint, rectEndPoint)
+	rectThickness = 2
+	
+	rectText = "Prediction Area "
+	rectTextBottomLeft = (rectStartPoint[0], rectEndPoint[1] + 15)
+	rectTextFont = cv2.FONT_HERSHEY_SIMPLEX
+	rectTextScale = 0.5
 	rectTextColor = rectColor
 	rectTextThickness = 1
 	rectTextLineType = cv2.LINE_AA

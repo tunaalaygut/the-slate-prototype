@@ -4,6 +4,8 @@ import numpy
 import sdu
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import pickle
+from tensorflow import keras
 
 #Global variables
 LOW_THRESHOLD = []
@@ -23,12 +25,24 @@ hsv = cv2.COLOR_BGR2HSV
 COLOR_SPACE = ycrcb
 calibrated = False
 
+
+pickle_IMAGE_SIZE_file = open("../pegiv2/pickles/image_size.pickle", "rb")
+pickle_CLASSES_file = open("../pegiv2/pickles/classes.pickle", "rb")
+
+IMAGE_SIZE = pickle.load(pickle_IMAGE_SIZE_file)
+CLASSES = pickle.load(pickle_CLASSES_file)
+
+pickle_IMAGE_SIZE_file.close()
+pickle_CLASSES_file.close()
+
+model = keras.models.load_model("../pegiv2/model_output/pegi.h5")
+
 def get_webcam_feed():
 	global calibrated, SAMPLE_1, SAMPLE_2
 	webcam = cv2.VideoCapture(0)	#Source is 0, can be passed as an argument to the program.
 	print("\nWelcome to Slate's Skin Detector...\nWebcam feed started.")
 	sdu.print_dashed_line()
-	
+
 	while True:
 	
 		captured, webcamImage = webcam.read()
@@ -53,14 +67,30 @@ def get_webcam_feed():
 			skin = cv2.bitwise_and(webcamImage, webcamImage, mask=mask)
 			#UNTIL HERE
 			
-			finalImage = numpy.hstack([skin, webcamImage])
-			cv2.imshow("Webcam Feed", cv2.flip(finalImage, 1))
+			skin = cv2.flip(skin, 1)
+			skin, predictionRectPos = sdu.draw_prediction_rectangle(skin)
+			#finalImage = numpy.hstack([skin, webcamImage])
+			#cv2.imshow("Webcam Feed", cv2.flip(finalImage, 1))
+			cv2.imshow("Webcam Feed", skin)
+			
+			#pegi predicts grayscale
+			imageToPredict = cv2.cvtColor(sdu.get_portion(skin, predictionRectPos), cv2.COLOR_BGR2GRAY)
+			imageToPredict = cv2.resize(imageToPredict, IMAGE_SIZE)
+			imageToPredict = imageToPredict.astype("float") / 255.0
+			imageToPredict = imageToPredict.reshape((1, imageToPredict.shape[0], imageToPredict.shape[1], 1))
+			
+			prediction = model.predict(imageToPredict)
+
+			index = prediction.argmax(axis=1)[0]
+			label = CLASSES[index]
+			percentage = numpy.amax(prediction) * 100
+			if percentage > 80:
+				print("It is a %%%.2f" % (numpy.amax(prediction) * 100) + " " + label + ".")
 		else:
 			webcamImage = cv2.flip(webcamImage, 1)
 			webcamImage, sampleAreaOnePosition = sdu.draw_sample_rectangle(webcamImage, 1)
 			webcamImage, sampleAreaTwoPosition = sdu.draw_sample_rectangle(webcamImage, 2)
 			cv2.imshow("Webcam Feed", webcamImage)
-		
 		key = cv2.waitKey(1)
 		
 		if key == 27:	#ESC key is pressed
@@ -119,10 +149,6 @@ def calibrate_user_skin_tone():
 	# Make the calibration calculations here	
 	sampleOneImage = cv2.cvtColor(SAMPLE_1, COLOR_SPACE)
 	sampleTwoImage = cv2.cvtColor(SAMPLE_2, COLOR_SPACE)
-	
-	# Display the sample images ?
-	cv2.imshow("Sample 1", sampleOneImage)
-	cv2.imshow("Sample 2", sampleTwoImage)
 	
 	(LOW_THRESHOLD, HIGH_THRESHOLD) = sdu.calculate_thresholds_from_channels(cv2.mean(sampleOneImage), cv2.mean(sampleTwoImage), offsetLow, offsetHigh)
 	
