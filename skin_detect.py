@@ -56,9 +56,7 @@ def get_webcam_feed():
 			thresholdImage = cv2.cvtColor(webcamImage, COLOR_SPACE)
 			mask = cv2.inRange(thresholdImage, LOW_THRESHOLD, HIGH_THRESHOLD)
 			
-			# BELOW CODE IS NOT MINE!!!!
-			# apply a series of erosions and dilations to the mask	
-			# using an elliptical kernel
+			# Morphological operations, they need to inputs; one the image to apply the operation to and second the kernel or a structuring element which decides the nature of the operation.
 			kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
 			mask = cv2.erode(mask, kernel, iterations = 2)
 			mask = cv2.dilate(mask, kernel, iterations = 2)

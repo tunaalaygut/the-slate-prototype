@@ -41,16 +41,7 @@ def draw_prediction_rectangle(image):
 	
 	position = (rectStartPoint, rectEndPoint)
 	rectThickness = 2
-	
-	rectText = "Prediction Area "
-	rectTextBottomLeft = (rectStartPoint[0], rectEndPoint[1] + 15)
-	rectTextFont = cv2.FONT_HERSHEY_SIMPLEX
-	rectTextScale = 0.5
-	rectTextColor = rectColor
-	rectTextThickness = 1
-	rectTextLineType = cv2.LINE_AA
 
-	image = cv2.putText(image, rectText, rectTextBottomLeft, rectTextFont, rectTextScale, rectTextColor, rectTextThickness, rectTextLineType)
 	return (cv2.rectangle(image, rectStartPoint, rectEndPoint, rectColor, rectThickness), position)
 	
 # Takes a position and returns the top left corner.
