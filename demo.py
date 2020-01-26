@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
-import eye
-import calibration
-import skin_detector
-import cv2
-import drawing_utility
-import sampler
-import model_service
+from detector import eye
+from detector import calibration
+from detector import skin_detector
+from detector import drawing_utility
+from detector import sampler
+from detector import model_service
 from tensorflow import keras
+from detector import data_gatherer
+
+import cv2
 import pickle
 from time import sleep
 from sys import stdout
-import data_gatherer
 
 samplePositions = []
 
@@ -35,8 +36,8 @@ HIGH_THRESHOLD = []
 
 windowTitle = "P.E.G.I. & Skin Detection Demo"
 
-pickle_IMAGE_SIZE_file = open("../pegiv2/pickles/image_size.pickle", "rb")
-pickle_CLASSES_file = open("../pegiv2/pickles/classes.pickle", "rb")
+pickle_IMAGE_SIZE_file = open("./classifier/pickles/image_size.pickle", "rb")
+pickle_CLASSES_file = open("./classifier/pickles/classes.pickle", "rb")
 
 IMAGE_SIZE = pickle.load(pickle_IMAGE_SIZE_file)
 CLASSES = pickle.load(pickle_CLASSES_file)
@@ -44,7 +45,7 @@ CLASSES = pickle.load(pickle_CLASSES_file)
 pickle_IMAGE_SIZE_file.close()
 pickle_CLASSES_file.close()
 
-model = keras.models.load_model("../pegiv2/model_output/pegi.h5")
+model = keras.models.load_model("./classifier/model_output/pegi.h5")
 
 data_gatherer = data_gatherer.DataGatherer("./gestures/fbomb", "fbomb", limit = 5)
 
