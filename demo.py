@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import eye
 import calibration
 import skin_detector
@@ -9,6 +11,7 @@ from tensorflow import keras
 import pickle
 from time import sleep
 from sys import stdout
+import data_gatherer
 
 samplePositions = []
 
@@ -43,6 +46,8 @@ pickle_CLASSES_file.close()
 
 model = keras.models.load_model("../pegiv2/model_output/pegi.h5")
 
+data_gatherer = data_gatherer.DataGatherer("./gestures/fbomb", "fbomb", limit = 5)
+
 print("Welcome to P.E.G.I. & Skin Detection Demo\n-----------------------------------------\n")
 
 while True:
@@ -75,6 +80,8 @@ while True:
 			
 	if key == 27:	#ESC key is pressed
 		break
+	if key == 32: # Space key is pressed
+		data_gatherer.save_image(image)
 	if key == 115 and not CALIBRATED:	# s key is pressed and calibration is not done yet.
 		if samplesTaken < samplesToTake:
 			sampleImage = sampler.get_sample_image(image, samplePositions[samplesTaken])
@@ -84,7 +91,7 @@ while True:
 			if(samplesTaken == samplesToTake):
 				print("\nPress s to start skin detection...\n")
 		else:
-			LOW_THRESHOLD, HIGH_THRESHOLD = calibration.get_thresholds()
+			LOW_THRESHOLD, HIGH_THRESHOLD = calibration.get_thresholds(sampleImages)
 			print("\nSkin detection started now.")
 			CALIBRATED = True
 cv2.destroyAllWindows()
