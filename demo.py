@@ -8,6 +8,7 @@ from detector import sampler
 from detector import model_service
 from tensorflow import keras
 from detector import data_gatherer
+from detector import position_provider
 
 import cv2
 import pickle
@@ -16,10 +17,10 @@ from sys import stdout
 
 samplePositions = []
 
-sampleAreaOnePosition = ((25, 25), (125, 125))
-sampleAreaTwoPosition = ((400, 25), (500, 125))
+sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale = 0.2)
+sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale = 0.2)
 
-predictionAreaPosition = ((100, 100), (400, 400))
+predictionAreaPosition = position_provider.get_center(eye.see(), scale = 0.4)
 
 samplePositions.append(sampleAreaOnePosition)
 samplePositions.append(sampleAreaTwoPosition)
@@ -71,7 +72,7 @@ while True:
 		predictionText, percentage = model_service.get_prediction(model, predictionImage, IMAGE_SIZE, CLASSES, cv2.COLOR_BGR2GRAY)
 		
 		if percentage > 90:		
-			finalImage = drawing_utility.draw_text(finalImage, ("It is {} {}").format(predictionText, percentage), (predictionAreaPosition[0][0], predictionAreaPosition[1][1] + 20), scale = 0.8, color = (0, 0, 255), thickness = 2)
+			finalImage = drawing_utility.draw_text(finalImage, ("It is {} {}").format(predictionText, round(percentage, 2)), (predictionAreaPosition[0][0], predictionAreaPosition[1][1] + 23), scale = 0.8, color = (0, 0, 255), thickness = 1)
 		
 		cv2.imshow(windowTitle, finalImage)
 	else:
