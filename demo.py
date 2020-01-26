@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from detector import eye
 from detector import calibration
 from detector import skin_detector
@@ -20,7 +19,7 @@ samplePositions = []
 sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale = 0.2)
 sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale = 0.2)
 
-predictionAreaPosition = position_provider.get_center(eye.see(), scale = 0.4)
+predictionAreaPosition = position_provider.get_center(eye.see(), scale = 0.5)
 
 samplePositions.append(sampleAreaOnePosition)
 samplePositions.append(sampleAreaTwoPosition)
@@ -76,7 +75,9 @@ while True:
 		
 		cv2.imshow(windowTitle, finalImage)
 	else:
+		
 		cv2.imshow(windowTitle, imageR)
+		
 		
 	key = cv2.waitKey(1)
 			
