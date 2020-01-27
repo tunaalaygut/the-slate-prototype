@@ -37,17 +37,17 @@ __email__ 		= "alaygut@gmail.com"
 # Arguments to the program are defined below.
 parser = argparse.ArgumentParser(description='')
 # By default, program starts in prediction mode.
-parser.add_argument('-m', '--mode', type = int, default = 0, help="mode of operation, 0: prediction, 1: data collection")
+parser.add_argument('-m', '--mode', type=int, default=0, help="mode of operation, 0: prediction, 1: data collection")
 # By default, program starts with calibration mode on.
-parser.add_argument('-c', '--calibration', type = int, default = 1, help="skin calibration is on. (1 or 0)")
+parser.add_argument('-c', '--calibration', type=int, default=1, help="skin calibration is on. (1 or 0)")
 # By default program starts with 2 samples to take.
-parser.add_argument('-s', '--samples', type = int, default = 2, help="number of samples to take")
+parser.add_argument('-s', '--samples', type=int, default=2, help="number of samples to take")
 
 # Data collection mode arguments
 parser.add_argument('-o', '--outputpath', help="output path for images")
 parser.add_argument('-f', '--filename', help="name for images")
-parser.add_argument('-l', '--limit', type = int, default = 9999, help="limit the number of images that will be taken")
-parser.add_argument('-n', '--imagecount', type = int, default = 0, help="start count of the images")
+parser.add_argument('-l', '--limit', type=int, default = 9999, help="limit the number of images that will be taken")
+parser.add_argument('-n', '--imagecount', type=int, default=0, help="start count of the images")
 args = vars(parser.parse_args())
 
 # Global Variables
@@ -62,8 +62,8 @@ calibration_mode = bool(args["calibration"])
 calibrated = not calibration_mode
 samples_to_take = int(args["samples"])
 
-low_threshold = np.array([0, 133, 77], dtype = "uint8") 
-high_threshold = np.array([235, 173, 127], dtype = "uint8")
+low_threshold = np.array([0, 133, 77], dtype="uint8")
+high_threshold = np.array([235, 173, 127], dtype="uint8")
 
 window_title = "P.E.G.I. & Skin Detection Demo"
 
@@ -78,13 +78,13 @@ pickle_classes_file.close()
 
 model = keras.models.load_model("./classifier/model_output/pegi.h5")
 
-data_gatherer = data_gatherer.DataGatherer(args["outputpath"], args["filename"], image_count = args["imagecount"], limit = args["limit"])
+data_gatherer = data_gatherer.DataGatherer(args["outputpath"], args["filename"], image_count=args["imagecount"], limit=args["limit"])
 
 # Global variables of skin calibration
 sample_positions = []
 
-sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale = 0.2)
-sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale = 0.2)
+sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale=0.2)
+sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale=0.2)
 
 sample_positions.append(sampleAreaOnePosition)
 sample_positions.append(sampleAreaTwoPosition)
@@ -94,39 +94,41 @@ samples_taken = 0
 
 sample_images = []
 
-predictionAreaPosition = position_provider.get_center(eye.see(), scale = 0.5)
+predictionAreaPosition = position_provider.get_center(eye.see(), scale=0.5)
+
 
 # Main function
-def main():		
+def main():
 	print("Welcome to P.E.G.I. & Skin Detection Demo\n-----------------------------------------\n")
 	
 	while main_loop:	
 		image = eye.see()
-		finalImage = []
+		final_image = []
 		
 		if calibration_mode and not calibrated: # program is running with calibration mode on
-			imageR = image.copy() # Image to draw the rectangles on.
-			imageR = drawing_utility.draw_rectangle(imageR, sampleAreaOnePosition, thickness = 2)
-			imageR = drawing_utility.draw_rectangle(imageR, sampleAreaTwoPosition, thickness = 2, color = (0, 0, 255))
-			finalImage = imageR
+			image_r = image.copy() # Image to draw the rectangles on.
+			image_r = drawing_utility.draw_rectangle(image_r, sampleAreaOnePosition, thickness=2)
+			image_r = drawing_utility.draw_rectangle(image_r, sampleAreaTwoPosition, thickness=2, color=(0, 0, 255))
+			final_image = image_r
 			
 		if calibrated:
-			finalImage = skin_detector.get_skin_image(image, low_threshold, high_threshold)
-			finalImage = drawing_utility.draw_rectangle(finalImage, predictionAreaPosition, thickness = 2, color = (255, 255, 0))
+			final_image = skin_detector.get_skin_image(image, low_threshold, high_threshold)
+			final_image = drawing_utility.draw_rectangle(final_image, predictionAreaPosition, thickness=2, color=(255, 255, 0))
 			if op_mode == 0:
-				predictionImage = sampler.get_sample_image(finalImage, predictionAreaPosition)
-				predictionText, percentage = model_service.get_prediction(model, predictionImage, image_size, classes, cv2.COLOR_BGR2GRAY)
+				prediction_image = sampler.get_sample_image(final_image, predictionAreaPosition)
+				prediction_text, percentage = model_service.get_prediction(model, prediction_image, image_size, classes, cv2.COLOR_BGR2GRAY)
 				
 				if percentage > 90:		
-					finalImage = drawing_utility.draw_text(finalImage, ("It is {} {}").format(predictionText, round(percentage, 2)), (predictionAreaPosition[0][0], predictionAreaPosition[1][1] + 23), scale = 0.8, color = (0, 0, 255), thickness = 1)				
-		cv2.imshow(window_title, finalImage)
+					final_image = drawing_utility.draw_text(final_image, "It is {} {}".format(prediction_text, round(percentage, 2)), (predictionAreaPosition[0][0], predictionAreaPosition[1][1] + 23), scale = 0.8, color = (0, 0, 255), thickness = 1)
+		cv2.imshow(window_title, final_image)
 		
 		key = cv2.waitKey(1)
 		
 		handle_key(key, image)
 		
 	cv2.destroyAllWindows()
-	
+
+
 def handle_key(key, image):
 	global calibrated, low_threshold, high_threshold, samples_taken, main_loop
 
@@ -141,9 +143,9 @@ def handle_key(key, image):
 			sample_image = sampler.get_sample_image(image, sample_positions[samples_taken])
 			sample_images.append(sample_image)
 			samples_taken += 1
-			print(("Sample {} is taken.").format(samples_taken))
+			print("Sample {} is taken.".format(samples_taken))
 			
-			if(samples_taken == samples_to_take):
+			if samples_taken == samples_to_take:
 				print("\nPress s to start skin detection...\n")
 		else:
 			(low_threshold, high_threshold) = calibration.get_thresholds(sample_images)
@@ -151,6 +153,7 @@ def handle_key(key, image):
 			low_threshold[0] = 0
 			high_threshold[0] = 235
 			calibrated = True
-	
+
+
 if __name__ == "__main__":
 	main()
