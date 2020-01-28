@@ -94,7 +94,7 @@ samples_taken = 0
 
 sample_images = []
 
-predictionAreaPosition = position_provider.get_center(eye.see(), scale=0.5)
+prediction_area_position = position_provider.get_center(eye.see(), scale=0.5)
 
 
 # Main function
@@ -113,13 +113,13 @@ def main():
 			
 		if calibrated:
 			final_image = skin_detector.get_skin_image(image, low_threshold, high_threshold)
-			final_image = drawing_utility.draw_rectangle(final_image, predictionAreaPosition, thickness=2, color=(255, 255, 0))
+			final_image = drawing_utility.draw_rectangle(final_image, prediction_area_position, thickness=2, color=(255, 255, 0))
 			if op_mode == 0:
-				prediction_image = sampler.get_sample_image(final_image, predictionAreaPosition)
+				prediction_image = sampler.get_sample_image(final_image, prediction_area_position)
 				prediction_text, percentage = model_service.get_prediction(model, prediction_image, image_size, classes, cv2.COLOR_BGR2GRAY)
 				
 				if percentage > 90:		
-					final_image = drawing_utility.draw_text(final_image, "It is {} {}".format(prediction_text, round(percentage, 2)), (predictionAreaPosition[0][0], predictionAreaPosition[1][1] + 23), scale = 0.8, color = (0, 0, 255), thickness = 1)
+					final_image = drawing_utility.draw_text(final_image, "It is {} {}".format(prediction_text, round(percentage, 2)), (prediction_area_position[0][0], prediction_area_position[1][1] + 23), scale = 0.8, color = (0, 0, 255), thickness = 1)
 		cv2.imshow(window_title, final_image)
 		
 		key = cv2.waitKey(1)
@@ -135,6 +135,7 @@ def handle_key(key, image):
 	if key == 27:	# ESC key is pressed
 		main_loop = False
 		
+	# DATA COLLECTOR IS NOT SAVING THE PROPER IMAGE.
 	if key == 32 and op_mode == 1: 	# Space key is pressed in data collection mode.
 		data_gatherer.save_image(image)	
 		
