@@ -94,8 +94,8 @@ data_gatherer = data_gatherer.DataGatherer(args["outputpath"],
 # Global variables of skin calibration
 sample_positions = []
 
-sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale=0.2)
-sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale=0.2)
+sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale=0.1)
+sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale=0.1)
 
 sample_positions.append(sampleAreaOnePosition)
 sample_positions.append(sampleAreaTwoPosition)
@@ -135,6 +135,8 @@ def main():
         if calibrated:
             final_image = skin_detector.get_skin_image(image, low_threshold,
                                                        high_threshold)
+            image = final_image  # Because it will be sent to the handle_key.
+
             final_image = \
                 drawing_utility.draw_rectangle(final_image,
                                                pred_area_pos,
@@ -179,13 +181,13 @@ def handle_key(key, image):
     if key == 27:
         main_loop = False
 
-    # DATA COLLECTOR IS NOT SAVING THE PROPER IMAGE.
     # Space key is pressed in data collection mode.
-    if key == 32 and op_mode == 1:
-        data_gatherer.save_image(image)
+    if key == 32 and op_mode == 1 and calibrated:
+        data_image = sampler.get_sample_image(image, pred_area_pos)
+        data_gatherer.save_image(data_image)
 
     # If program is being run with calibration mode
-    # and calibration has not been made yet.
+    # and calibration has not been made yet. 's' key is pressed.
     if key == 115 and calibration_mode and not calibrated:
         if samples_taken < samples_to_take:
             sample_image = sampler.\
