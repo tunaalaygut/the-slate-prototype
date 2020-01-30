@@ -4,6 +4,7 @@ demo.py: Module that, brings the modules inside the detector and
 classifier packages to perform the intended functionality of 
 the Slate project. This module is created to demonstrate the
 capabilities of the project.
+
 It includes two modes;
 
 Prediction mode: Mode that uses the classifier model
