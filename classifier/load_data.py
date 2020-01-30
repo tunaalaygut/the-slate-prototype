@@ -7,6 +7,7 @@ module loads data that has the following structure:
         ---> file.ext
 It loads the data with the corresponding class label, then binarizes the labels
 for later categorical classification.
+Loads the images in GRAYSCALE.
 """
 
 # Imports
@@ -15,6 +16,7 @@ import os
 import cv2
 import random
 import pickle
+import argparse
 from tensorflow.keras import utils as np_utils
 
 # Information
@@ -23,9 +25,22 @@ __copyright__ = "Copyright 2020, The Slate Project"
 __status__ = "Development"
 __email__ = "alaygut@gmail.com"
 
-data_dir = "./dataset"
-image_size = (80, 80)
-load_threshold = 1000  # Load no more than this amount of file per class.
+# Arguments to the program are defined below.
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('-d', '--dataset', required=True,
+                    help="Path to the data set directory.")
+parser.add_argument('-ih', '--height', required=True, type=int,
+                    help="Desired height of dataset images.")
+parser.add_argument('-iw', '--width', required=True, type=int,
+                    help="Desired width of dataset images.")
+# Load no more than this amount of file per class.
+parser.add_argument('-t', '--threshold', type=int, default=1000,
+                    help="Path to the data set directory.")
+args = vars(parser.parse_args())
+
+data_dir = args["dataset"]
+image_size = (args["height"], args["width"])
+load_threshold = args["threshold"]
 
 # Global variables
 classes = []
@@ -38,6 +53,7 @@ y = []  # For the label
 
 # Loads the CLASSES list based on the folders inside data set folder
 def load_classes():
+    global classes
     for CLASS in os.listdir(data_dir):
         classes.append(CLASS)
 
@@ -77,7 +93,7 @@ def main():
         # with categorical_crossentropy
         y.append(np_utils.to_categorical(label, num_classes=len(classes)))
 
-    X = numpy.array(X).reshape(-1, (image_size[0], image_size[1]), 1)
+    X = numpy.array(X).reshape(-1, *image_size, 1)
     y = numpy.array(y)
 
     store_data()

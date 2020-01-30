@@ -2,7 +2,6 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Conv2D, MaxPooling2D, Flatten
 import pickle
-import numpy
 import os
 
 pickle_X_file = open("pickles/X.pickle", "rb")
@@ -17,7 +16,7 @@ pickle_X_file.close()
 pickle_y_file.close()
 pickle_CLASSES_file.close()
 
-X = X / 255.0 #Since X is grayscale.
+X = X / 255.0  # Since X is grayscale.
 
 BATCH_SIZE = 32
 EPOCHS = 7
@@ -47,9 +46,9 @@ model.add(Activation('relu'))
 model.add(Dense(len(CLASSES)))
 model.add(Activation('softmax'))
 
-model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
-model.fit(X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, validation_split = 0.20)
+model.fit(X, y, batch_size = BATCH_SIZE, epochs=EPOCHS, validation_split=0.2)
 
 if not os.path.isdir("model_output"):
 	os.mkdir("model_output")

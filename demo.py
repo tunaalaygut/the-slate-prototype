@@ -98,6 +98,8 @@ sample_positions = []
 sampleAreaOnePosition = position_provider.get_top_left(eye.see(), scale=0.1)
 sampleAreaTwoPosition = position_provider.get_top_right(eye.see(), scale=0.1)
 
+print(eye.see().shape)
+
 sample_positions.append(sampleAreaOnePosition)
 sample_positions.append(sampleAreaTwoPosition)
 
