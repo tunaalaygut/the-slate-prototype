@@ -30,27 +30,23 @@ batch_size = args["batchsize"]
 epochs = args["epochs"]
 validation_split = args["validationsplit"] / 100
 
+x = []
+y = []
+classes = []
+
 
 def train_model():
-    pickle_X_file = open("pickles/X.pickle", "rb")
-    pickle_y_file = open("pickles/y.pickle", "rb")
-    pickle_classes_file = open("pickles/classes.pickle", "rb")
+    global x
 
-    X = pickle.load(pickle_X_file)
-    y = pickle.load(pickle_y_file)
-    classes = pickle.load(pickle_classes_file)
+    load_data()
 
-    pickle_X_file.close()
-    pickle_y_file.close()
-    pickle_classes_file.close()
+    x = x / 255.0  # Since X values are in grayscale.
 
-    X = X / 255.0  # Since X values are in grayscale.
-
-    model = pegi_architecture.get_model(input_shape=X.shape[1:],
+    model = pegi_architecture.get_model(input_shape=x.shape[1:],
                                         output_size=len(classes),
                                         summarize=True)
     # Train the model.
-    model.fit(X, y,
+    model.fit(x, y,
               batch_size=batch_size,
               epochs=epochs,
               validation_split=validation_split)
@@ -62,9 +58,24 @@ def train_model():
     model.save("model_output/pegi.h5")
 
 
+def load_data():
+    global x, y, classes
+
+    pickle_x_file = open("pickles/X.pickle", "rb")
+    pickle_y_file = open("pickles/y.pickle", "rb")
+    pickle_classes_file = open("pickles/classes.pickle", "rb")
+
+    x = pickle.load(pickle_x_file)
+    y = pickle.load(pickle_y_file)
+    classes = pickle.load(pickle_classes_file)
+
+    pickle_x_file.close()
+    pickle_y_file.close()
+    pickle_classes_file.close()
+
+
 def main():
     train_model()
-    print("Hello, World!")
 
 
 if __name__ == "__main__":
