@@ -17,7 +17,7 @@ import cv2
 import random
 import pickle
 import argparse
-from tensorflow.keras import utils as np_utils
+from tensorflow.keras import utils
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -91,7 +91,7 @@ def main():
         X.append(data)
         # Convert the labels to binary to use them
         # with categorical_crossentropy
-        y.append(np_utils.to_categorical(label, num_classes=len(classes)))
+        y.append(utils.to_categorical(label, num_classes=len(classes)))
 
     X = numpy.array(X).reshape(-1, *image_size, 1)
     y = numpy.array(y)

@@ -3,7 +3,8 @@
 """data_gatherer.py: Module that, given an image, output path and a filename, saves that image to the path with the given filename. Designed to use while creating datasets."""
 
 # Imports
-import cv2, time, argparse, os
+import cv2
+import os
 
 # Information
 __author__ = 	"Tuna ALAYGUT"

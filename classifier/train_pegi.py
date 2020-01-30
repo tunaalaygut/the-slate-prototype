@@ -1,56 +1,71 @@
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Activation, Conv2D, MaxPooling2D, Flatten
+#!/usr/bin/env python
+"""
+train_pegi.py: Trains the model with the specified architecture using the given
+batch size, number of epochs and validation split.
+"""
+
+# Imports
 import pickle
 import os
+import argparse
+from classifier import pegi_architecture
 
-pickle_X_file = open("pickles/X.pickle", "rb")
-pickle_y_file = open("pickles/y.pickle", "rb")
-pickle_CLASSES_file = open("pickles/classes.pickle", "rb")
+# Information
+__author__ = "Tuna ALAYGUT"
+__copyright__ = "Copyright 2020, The Slate Project"
+__status__ = "Development"
+__email__ = "alaygut@gmail.com"
 
-X = pickle.load(pickle_X_file)
-y = pickle.load(pickle_y_file)
-CLASSES = pickle.load(pickle_CLASSES_file)
+# Arguments to the program are defined below.
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('-bs', '--batchsize', required=True, type=int,
+                    help="Batch size to train with.")
+parser.add_argument('-e', '--epochs', required=True, type=int,
+                    help="Number of epoch to train for.")
+parser.add_argument('-vs', '--validationsplit', required=True, type=int,
+                    help="Validation split. Out of 100.")
+args = vars(parser.parse_args())
 
-pickle_X_file.close()
-pickle_y_file.close()
-pickle_CLASSES_file.close()
+batch_size = args["batchsize"]
+epochs = args["epochs"]
+validation_split = args["validationsplit"] / 100
 
-X = X / 255.0  # Since X is grayscale.
 
-BATCH_SIZE = 32
-EPOCHS = 7
+def train_model():
+    pickle_X_file = open("pickles/X.pickle", "rb")
+    pickle_y_file = open("pickles/y.pickle", "rb")
+    pickle_classes_file = open("pickles/classes.pickle", "rb")
 
-model = Sequential()
+    X = pickle.load(pickle_X_file)
+    y = pickle.load(pickle_y_file)
+    classes = pickle.load(pickle_classes_file)
 
-model.add( Conv2D(32, (3, 3), input_shape = X.shape[1:]) )
-model.add( Activation('relu') )
-model.add( MaxPooling2D(2, 2) )
+    pickle_X_file.close()
+    pickle_y_file.close()
+    pickle_classes_file.close()
 
-model.add( Conv2D(64, (3, 3)) )
-model.add( Activation('relu') )
-model.add(MaxPooling2D(2, 2))
+    X = X / 255.0  # Since X values are in grayscale.
 
-model.add( Conv2D(128, (3, 3)) )
-model.add( Activation('relu') )
-model.add(MaxPooling2D(2, 2))
+    model = pegi_architecture.get_model(input_shape=X.shape[1:],
+                                        output_size=len(classes),
+                                        summarize=True)
+    # Train the model.
+    model.fit(X, y,
+              batch_size=batch_size,
+              epochs=epochs,
+              validation_split=validation_split)
 
-#model.add( Conv2D(128, (3, 3)) )
-#model.add( Activation('relu') )
-#model.add(MaxPooling2D(2, 2))
+    # Save the model for future predictions.
+    if not os.path.isdir("model_output"):
+        os.mkdir("model_output")
 
-model.add(Flatten())
-model.add(Dense(64))
-model.add(Activation('relu'))
+    model.save("model_output/pegi.h5")
 
-model.add(Dense(len(CLASSES)))
-model.add(Activation('softmax'))
 
-model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+def main():
+    train_model()
+    print("Hello, World!")
 
-model.fit(X, y, batch_size = BATCH_SIZE, epochs=EPOCHS, validation_split=0.2)
 
-if not os.path.isdir("model_output"):
-	os.mkdir("model_output")
-	
-model.save("model_output/pegi.h5")
+if __name__ == "__main__":
+    main()
