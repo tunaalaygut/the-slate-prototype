@@ -1,38 +1,46 @@
 #!/usr/bin/env python
 
-"""sampler.py: Module that takes one image and a list of positions as input and outputs a list of sample images (portions of the input image with the given positions)."""
+"""
+sampler.py: Module that takes an image and a position as input and
+outputs a sample images (portion of the input image with the given
+position).
+"""
 
 # Information
-__author__ = 	"Tuna ALAYGUT"
+__author__ = "Tuna ALAYGUT"
 __copyright__ = "Copyright 2020, The Slate Project"
-__status__ = 	"Development"
-__email__ =		"alaygut@gmail.com"
+__status__ = "Development"
+__email__ = "alaygut@gmail.com"
 
-# Function that will be called.
-# image: The image that will be used to take samples from.
-# positions: List of positions. Each position is a tuple (topLeft, bottomRight).
-def get_sample_images(image, positions):
-	samples = []
-	
-	for position in positions:
-		samples.append(get_sample_image(image, position))
-		
-	return samples
 
 # returns a single portion of an image.
 def get_sample_image(image, position):
-	topLeftX = get_top_left(position)[0];
-	topLeftY = get_top_left(position)[1];
-	
-	bottomRightX = get_bottom_right(position)[0];
-	bottomRightY = get_bottom_right(position)[1];
+    """
+    Args:
+        image: Image to extract a portion of.
+        position: Top left and bottom right points of the area to use when
+        extracting the portion.
 
-	return image[topLeftY + 2 : bottomRightY - 2, topLeftX + 2 : bottomRightX - 2]
+    Returns:
+        The portion of the image.
+    """
+    top_left_x = get_top_left(position)[0]
+    top_left_y = get_top_left(position)[1]
+
+    bottom_right_x = get_bottom_right(position)[0]
+    bottom_right_y = get_bottom_right(position)[1]
+
+    return image[
+           top_left_y + 2: bottom_right_y - 2,
+           top_left_x + 2: bottom_right_x - 2
+           ]
+
 
 # Takes a position and returns the top left corner.
 def get_top_left(position):
-	return (position[0][0], position[0][1])
-	
+    return position[0][0], position[0][1]
+
+
 # Takes a position and returns the bottom right corner.
 def get_bottom_right(position):
-	return (position[1][0], position[1][1])
+    return position[1][0], position[1][1]

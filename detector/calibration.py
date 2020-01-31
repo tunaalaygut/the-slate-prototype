@@ -30,10 +30,13 @@ def get_thresholds(sample_images=None, offset_low=OFFSET_LOW,
     Returns the high and low thresholds that can be used to segment skin tone.
 
     Args:
-        sample_images:
-        offset_low:
-        offset_high:
-        color_space:
+        sample_images: Sample images that will be used to calculate the
+        thresholds.
+        offset_low: Offset that will be subtracted from the channels while
+        calculating the low threshold.
+        offset_high: Offset that will be added to the channels while
+        calculating the high threshold.
+        color_space: Color space that will be used to calculate thresholds.
 
     Returns:
         Low and high thresholds calculated using sample images are returned as

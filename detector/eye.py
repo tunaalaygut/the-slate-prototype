@@ -1,39 +1,47 @@
 #!/usr/bin/env python
 
-"""eye.py: Module that handles the camera (webcam) stuff. Starts the webcam feed. Returns a frame from the webcam."""
+"""
+eye.py: Module that handles the camera (webcam) stuff. Starts the webcam feed.
+Returns a frame from the webcam.
+"""
 
 # Imports
 import cv2
 
 # Information
-__author__ = 	"Tuna ALAYGUT"
+__author__ = "Tuna ALAYGUT"
 __copyright__ = "Copyright 2020, The Slate Project"
-__status__ = 	"Development"
-__email__ =		"alaygut@gmail.com"
+__status__ = "Development"
+__email__ = "alaygut@gmail.com"
 
 # Global variables
-SOURCE = 0 # Default source is zero.
-webcam = cv2.VideoCapture(SOURCE)
+webcam = cv2.VideoCapture(0)  # Default source is zero.
 
-#Initialize the eye with a custom source.
-def init_eye(source: int):
-	global SOURCE, webcam
-	SOURCE = source
-	webcam = cv2.VideoCapture(SOURCE)
 
-# see function returns the frame that camera sees at that moment. Can convert the image to given color space. By default returns a flipped image.
-def see(flipped: bool = True, colorSpace = None): 
-	captured, webcamImage = webcam.read()
-	if captured:
-		if colorSpace:
-			webcamImage = cv2.cvtColor(webcamImage, colorSpace)
-		if not flipped:
-			return webcamImage
-		return cv2.flip(webcamImage, 1)
-	return None	
-	
+def see(flipped: bool = True, color_space=None):
+    """
+    Provides a frame from the camera.
+
+    Args:
+        flipped: Flip the returned image or not.
+        color_space: Which color space to see in.
+
+    Returns:
+        The image captured by the webcam.
+    """
+    captured, webcam_image = webcam.read()
+    if captured:
+        if color_space:
+            webcam_image = cv2.cvtColor(webcam_image, color_space)
+        if not flipped:
+            return webcam_image
+        return cv2.flip(webcam_image, 1)
+    return None
+
+
 def main():
-	print("Hello, World!")
+    print("Hello, World!")
 
-if(__name__ == "__main__"):
-	main()
+
+if __name__ == "__main__":
+    main()
