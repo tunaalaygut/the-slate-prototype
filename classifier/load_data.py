@@ -15,9 +15,9 @@ import numpy
 import os
 import cv2
 import random
-import pickle
 import argparse
 from tensorflow.keras import utils
+from classifier.pickle_utility import put_pickle_object
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -107,21 +107,10 @@ def store_data():
     if not (os.path.isdir("pickles")):
         os.mkdir("pickles")
 
-    pickle_output = open("pickles/X.pickle", "wb")
-    pickle.dump(X, pickle_output)
-    pickle_output.close()
-
-    pickle_output = open("pickles/classes.pickle", "wb")
-    pickle.dump(classes, pickle_output)
-    pickle_output.close()
-
-    pickle_output = open("pickles/y.pickle", "wb")
-    pickle.dump(y, pickle_output)
-    pickle_output.close()
-
-    pickle_output = open("pickles/image_size.pickle", "wb")
-    pickle.dump(image_size, pickle_output)
-    pickle_output.close()
+    put_pickle_object(X, "pickles/X.pickle")
+    put_pickle_object(classes, "pickles/classes.pickle")
+    put_pickle_object(y, "pickles/y.pickle")
+    put_pickle_object(image_size, "pickles/image_size.pickle")
 
     print("Stored the pickles.")
 

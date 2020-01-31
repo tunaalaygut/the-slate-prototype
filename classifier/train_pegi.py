@@ -9,6 +9,7 @@ import pickle
 import os
 import argparse
 from classifier import pegi_architecture
+from classifier.pickle_utility import get_pickle_object
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -61,17 +62,9 @@ def train_model():
 def load_data():
     global x, y, classes
 
-    pickle_x_file = open("pickles/X.pickle", "rb")
-    pickle_y_file = open("pickles/y.pickle", "rb")
-    pickle_classes_file = open("pickles/classes.pickle", "rb")
-
-    x = pickle.load(pickle_x_file)
-    y = pickle.load(pickle_y_file)
-    classes = pickle.load(pickle_classes_file)
-
-    pickle_x_file.close()
-    pickle_y_file.close()
-    pickle_classes_file.close()
+    x = get_pickle_object("pickles/X.pickle")
+    y = get_pickle_object("pickles/y.pickle")
+    classes = get_pickle_object("pickles/classes.pickle")
 
 
 def main():
