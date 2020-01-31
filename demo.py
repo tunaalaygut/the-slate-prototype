@@ -47,6 +47,12 @@ parser.add_argument('-c', '--calibration', type=int, default=1,
 # By default program starts with 2 samples to take.
 parser.add_argument('-s', '--samples', type=int, default=2,
                     help="number of samples to take")
+# Whether we want to segment skin or not. Program segments by default.
+parser.add_argument('-ss', '--segmentskin', type=int, default=1,
+                    help="Do you need skin segmentation? (0: no, 1: yes)")
+#
+parser.add_argument('-pt', '--confidence', type=int, default=50,
+                    help="Prediction confidence threshold. (%)")
 
 # Data collection mode arguments
 parser.add_argument('-o', '--outputpath',
@@ -70,6 +76,8 @@ if op_mode == 1 and (args["outputpath"] is None or args["filename"] is None):
 calibration_mode = bool(args["calibration"])
 calibrated = not calibration_mode
 samples_to_take = int(args["samples"])
+skin_segmentation = args["segmentskin"]
+confidence_threshold = args["confidence"]
 
 low_threshold = np.array([0, 133, 77], dtype="uint8")
 high_threshold = np.array([235, 173, 127], dtype="uint8")
@@ -130,9 +138,16 @@ def main():
 
         # If calibration has been done.
         if calibrated:
-            final_image = skin_detector.get_skin_image(image, low_threshold,
-                                                       high_threshold)
-            image = final_image  # Because it will be sent to the handle_key.
+            if skin_segmentation:  # Skin segmentation is on.
+                final_image = skin_detector.get_skin_image(image,
+                                                           low_threshold,
+                                                           high_threshold)
+                # Since, it will be sent to the handle_key.
+                image = final_image
+            else:
+                # If segmentation is off, just treat the 'image'
+                # as the final image.
+                final_image = image
 
             final_image = \
                 drawing_utility.draw_rectangle(final_image,
@@ -151,7 +166,7 @@ def main():
                                                  classes,
                                                  cv2.COLOR_BGR2GRAY)
 
-                if percentage > 90:
+                if percentage > confidence_threshold:
                     final_image = \
                         drawing_utility.draw_text(final_image,
                                                   "It is {} {}".

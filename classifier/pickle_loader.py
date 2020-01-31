@@ -16,7 +16,7 @@ __email__ = "alaygut@gmail.com"
 def get_pickle_object(path: str, mode="rb"):
     """Opens the file in the given path with the given mode
     (by default, in rb). Loads the object from the file using pickles, closes
-    the file. Returns the object that is loaded.
+    the file. Returns the object that is loaded by pickle.
     """
     file = open(path, mode)  # Open the file.
     pickle_object = pickle.load(file)  # Load the pickle.
