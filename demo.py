@@ -23,9 +23,9 @@ from detector import sampler
 from detector import model_service
 from detector import data_gatherer
 from detector import position_provider
+from classifier.pickle_loader import get_pickle_object
 
 import cv2
-import pickle
 import argparse
 import numpy as np
 from tensorflow import keras
@@ -76,14 +76,8 @@ high_threshold = np.array([235, 173, 127], dtype="uint8")
 
 window_title = "P.E.G.I. & Skin Detection Demo"
 
-pickle_image_size_file = open("./classifier/pickles/image_size.pickle", "rb")
-pickle_classes_file = open("./classifier/pickles/classes.pickle", "rb")
-
-image_size = pickle.load(pickle_image_size_file)
-classes = pickle.load(pickle_classes_file)
-
-pickle_image_size_file.close()
-pickle_classes_file.close()
+image_size = get_pickle_object("./classifier/pickles/image_size.pickle")
+classes = get_pickle_object("./classifier/pickles/classes.pickle")
 
 model = keras.models.load_model("./classifier/model_output/pegi.h5")
 
