@@ -2,3 +2,5 @@
 */__*
 *.png
 .idea/
+classifier/model_output/logs
+classifier/model_output/PEGI-*

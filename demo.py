@@ -56,6 +56,9 @@ parser.add_argument('-pt', '--confidence', type=int, default=50,
 # Webcam source to start.
 parser.add_argument('-ws', '--webcamsource', type=int, default=0,
                     help="Source of the webcam to 'see' through.")
+# Model to make predictions with
+parser.add_argument('-mp', '--model', required=True,
+                    help="Model to be used. .h5 file.")
 
 # Data collection mode arguments
 parser.add_argument('-o', '--outputpath',
@@ -66,6 +69,7 @@ parser.add_argument('-l', '--limit', type=int, default=9999,
                     help="limit the number of images that will be taken")
 parser.add_argument('-n', '--imagecount', type=int, default=0,
                     help="start count of the images")
+
 args = vars(parser.parse_args())
 
 # Global Variables
@@ -90,7 +94,7 @@ window_title = "P.E.G.I. & Skin Detection Demo"
 image_size = get_pickle_object("./classifier/pickles/image_size.pickle")
 classes = get_pickle_object("./classifier/pickles/classes.pickle")
 
-model = keras.models.load_model("./classifier/model_output/pegi.h5")
+model = keras.models.load_model(args["model"])
 
 data_gatherer = DataGatherer(args["outputpath"],
                              args["filename"],
