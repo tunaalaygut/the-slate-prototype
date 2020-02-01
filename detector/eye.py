@@ -14,29 +14,40 @@ __copyright__ = "Copyright 2020, The Slate Project"
 __status__ = "Development"
 __email__ = "alaygut@gmail.com"
 
-# Global variables
-webcam = cv2.VideoCapture(0)  # Default source is zero.
 
+class Eye:
+    def __init__(self, source: int = 0):
+        self.webcam = cv2.VideoCapture(source)
 
-def see(flipped: bool = True, color_space=None):
-    """
-    Provides a frame from the camera.
+    def see(self, flipped: bool = True, color_space=None):
+        """
+        Provides a frame from the eye (camera).
 
-    Args:
-        flipped: Flip the returned image or not.
-        color_space: Which color space to see in.
+        Args:
+            flipped: Flip the returned image or not.
+            color_space: Which color space to see in.
 
-    Returns:
-        The image captured by the webcam.
-    """
-    captured, webcam_image = webcam.read()
-    if captured:
-        if color_space:
-            webcam_image = cv2.cvtColor(webcam_image, color_space)
-        if not flipped:
-            return webcam_image
-        return cv2.flip(webcam_image, 1)
-    return None
+        Returns:
+            The image captured by the webcam.
+        """
+        captured, webcam_image = self.webcam.read()
+        if captured:
+            if color_space:
+                webcam_image = cv2.cvtColor(webcam_image, color_space)
+            if not flipped:
+                return webcam_image
+            return cv2.flip(webcam_image, 1)
+        return None
+
+    def set_source(self, source):
+        """
+        This function can be called if there is a need to change the camera
+        source.
+
+        Args:
+            source: New source of the webcam.
+        """
+        self.webcam = cv2.VideoCapture(source)
 
 
 def main():

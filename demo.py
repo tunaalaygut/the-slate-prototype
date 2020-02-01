@@ -15,13 +15,13 @@ stores it to the specified path with the specified filename.
 """
 
 # Imports
-from detector import eye
+from detector.eye import Eye
 from detector import calibration
 from detector import skin_detector
 from detector import drawing_utility
 from detector import sampler
 from detector import model_service
-from detector import data_gatherer
+from detector.data_gatherer import DataGatherer
 from detector import position_provider
 from classifier.pickle_utility import get_pickle_object
 
@@ -50,9 +50,12 @@ parser.add_argument('-s', '--samples', type=int, default=2,
 # Whether we want to segment skin or not. Program segments by default.
 parser.add_argument('-ss', '--segmentskin', type=int, default=1,
                     help="Do you need skin segmentation? (0: no, 1: yes)")
-#
+# Above what percentage do we want our predictions to be shown?
 parser.add_argument('-pt', '--confidence', type=int, default=50,
                     help="Prediction confidence threshold. (%)")
+# Webcam source to start.
+parser.add_argument('-ws', '--webcamsource', type=int, default=0,
+                    help="Source of the webcam to 'see' through.")
 
 # Data collection mode arguments
 parser.add_argument('-o', '--outputpath',
@@ -75,7 +78,7 @@ if op_mode == 1 and (args["outputpath"] is None or args["filename"] is None):
 
 calibration_mode = bool(args["calibration"])
 calibrated = not calibration_mode
-samples_to_take = int(args["samples"])
+# samples_to_take = int(args["samples"])  # Not being used at the moment.
 skin_segmentation = args["segmentskin"]
 confidence_threshold = args["confidence"]
 
@@ -89,11 +92,13 @@ classes = get_pickle_object("./classifier/pickles/classes.pickle")
 
 model = keras.models.load_model("./classifier/model_output/pegi.h5")
 
-data_gatherer = data_gatherer.DataGatherer(args["outputpath"],
-                                           args["filename"],
-                                           image_count=args["imagecount"],
-                                           limit=args["limit"])
+data_gatherer = DataGatherer(args["outputpath"],
+                             args["filename"],
+                             image_count=args["imagecount"],
+                             limit=args["limit"])
 
+eye = Eye(args["webcamsource"])
+eye.set_source(2)
 # Global variables of skin calibration
 sample_positions = []
 
