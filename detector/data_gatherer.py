@@ -21,7 +21,7 @@ LIMIT = 9999
 
 
 class DataGatherer:
-    def __init__(self, output_path, filename, image_count=0, limit=LIMIT):
+    def __init__(self, output_path, filename, image_count=0, limit=LIMIT, extension="png"):
         """
         Initializes the instance with the necessary information to
         save the image.
@@ -36,6 +36,7 @@ class DataGatherer:
         self.filename = filename
         self.image_count = image_count
         self.limit = limit
+        self.extension = extension
 
     def save_image(self, image):
         """
@@ -45,8 +46,7 @@ class DataGatherer:
             image: Image to save.
         """
         if self.image_count < self.limit:
-            image_name = (self.filename + "_{}.png").format(self.image_count)
-
+            image_name = f"{self.filename}_{self.image_count}.{self.extension}"
             # Check if the directory exists.
             if not os.path.isdir(self.outputFolderPath):
                 # Directory does not exist, create it.

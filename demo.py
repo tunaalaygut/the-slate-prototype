@@ -96,13 +96,21 @@ classes = get_pickle_object("./classifier/pickles/classes.pickle")
 
 model = keras.models.load_model(args["model"])
 
-data_gatherer = DataGatherer(args["outputpath"],
-                             args["filename"],
-                             image_count=args["imagecount"],
-                             limit=args["limit"])
+regular_data_gatherer = DataGatherer(args["outputpath"],
+                                     args["filename"],
+                                     image_count=args["imagecount"],
+                                     limit=args["limit"])
+
+segmented_data_gatherer = DataGatherer(args["outputpath"],
+                                       f"seg_{args['filename']}",
+                                       image_count=args["imagecount"],
+                                       limit=args["limit"])
+
+segmented_save = []
+regular_save = []
 
 eye = Eye(args["webcamsource"])
-eye.set_source(2)
+
 # Global variables of skin calibration
 sample_positions = []
 
@@ -117,7 +125,7 @@ samples_taken = 0
 
 sample_images = []
 
-pred_area_pos = position_provider.get_center(eye.see(), scale=0.6)
+pred_area_pos = position_provider.get_center(eye.see(), scale=0.5)
 
 
 # Main function
@@ -194,16 +202,26 @@ def main():
 
 
 def handle_key(key, image):
-    global calibrated, low_threshold, high_threshold, samples_taken, main_loop
+    global calibrated, low_threshold, high_threshold, samples_taken, \
+        main_loop, segmented_save, regular_save
 
     # ESC key is pressed.
     if key == 27:
         main_loop = False
 
     # Space key is pressed in data collection mode.
+    # Maybe a more efficient solution can be found for this part.
     if key == 32 and op_mode == 1 and calibrated:
-        data_image = sampler.get_sample_image(image, pred_area_pos)
-        data_gatherer.save_image(data_image)
+        if skin_segmentation:
+            seg_image = sampler.get_sample_image(image, pred_area_pos)
+            raw_image = sampler.get_sample_image(eye.see(), pred_area_pos)
+        else:
+            raw_image = sampler.get_sample_image(image, pred_area_pos)
+            seg_image = skin_detector.get_skin_image(raw_image, low_threshold,
+                                                     high_threshold)
+
+        regular_data_gatherer.save_image(raw_image)
+        segmented_data_gatherer.save_image(seg_image)
 
     # If program is being run with calibration mode
     # and calibration has not been made yet. 's' key is pressed.
