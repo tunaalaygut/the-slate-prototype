@@ -1,5 +1,4 @@
-/__*
-*/__*
+*/__pycache__/
 *.png
 .idea/
 classifier/model_output/logs
