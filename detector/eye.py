@@ -49,6 +49,10 @@ class Eye:
         """
         self.webcam = cv2.VideoCapture(source)
 
+    def release(self):
+        """ When done, release the capture. """
+        self.webcam.release()
+
 
 def main():
     print("Hello, World!")

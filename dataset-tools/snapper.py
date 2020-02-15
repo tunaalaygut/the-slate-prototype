@@ -10,7 +10,13 @@ import os
 import argparse
 from detector.eye import Eye
 
+# Information
+__author__ = "Tuna ALAYGUT"
+__copyright__ = "Copyright 2020, The Slate Project"
+__status__ = "Development"
+__email__ = "alaygut@gmail.com"
 
+# Global variables
 parser = argparse.ArgumentParser(description="")
 parser.add_argument('-o', '--path', required=True,
                     help="Output path of the snapped images.")
@@ -51,6 +57,8 @@ def main():
             print(f"Image {temp_filename} is saved.")
 
             count += 1
+    eye.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
