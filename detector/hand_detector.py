@@ -37,6 +37,7 @@ class HandDetector:
             multiple hand detections.)
             boxes: location(s) of the hand(s) in the frame.
         """
+        # ref: https://github.com/darshanadakane/yolov3_objectdetection
         height, width, _ = image.shape
         blob = dnn.blobFromImage(image, 0.00392, (416, 416), (0, 0, 0),
                                  True, crop=False)
