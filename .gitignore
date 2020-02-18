@@ -1,0 +1,9 @@
+*/__pycache__/
+*.png
+.idea/
+classifier/model_output/logs
+classifier/model_output/PEGI-*
+pegi.cfg
+pegi.data
+pegi.names
+pegi.weights
