@@ -24,7 +24,6 @@ from detector import model_service
 from detector.data_gatherer import DataGatherer
 from detector import position_provider
 from classifier.pickle_utility import get_pickle_object
-from ..darknet import darknet
 
 import cv2
 import argparse
@@ -193,7 +192,6 @@ def main():
                                                   scale=0.8,
                                                   color=(0, 0, 255),
                                                   thickness=1)
-        darknet.performDetect(image)
         cv2.imshow(window_title, final_image)
 
         key = cv2.waitKey(1)
