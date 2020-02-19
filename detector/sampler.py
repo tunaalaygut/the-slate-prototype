@@ -24,11 +24,11 @@ def get_sample_image(image, position):
     Returns:
         The portion of the image.
     """
-    top_left_x = get_top_left(position)[0]
-    top_left_y = get_top_left(position)[1]
+    top_left_x = _get_top_left(position)[0]
+    top_left_y = _get_top_left(position)[1]
 
-    bottom_right_x = get_bottom_right(position)[0]
-    bottom_right_y = get_bottom_right(position)[1]
+    bottom_right_x = _get_bottom_right(position)[0]
+    bottom_right_y = _get_bottom_right(position)[1]
 
     return image[
            top_left_y + 2: bottom_right_y - 2,
@@ -37,10 +37,10 @@ def get_sample_image(image, position):
 
 
 # Takes a position and returns the top left corner.
-def get_top_left(position):
+def _get_top_left(position):
     return position[0][0], position[0][1]
 
 
 # Takes a position and returns the bottom right corner.
-def get_bottom_right(position):
+def _get_bottom_right(position):
     return position[1][0], position[1][1]
