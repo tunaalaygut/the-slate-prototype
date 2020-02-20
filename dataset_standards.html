@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <title>The SLATE - Dataset Standards</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5">
+                <h1>The S.L.A.T.E. Dataset Standards</h1>
+                <h3 class="mt-5">Hand Detector Training Dataset</h3>
+                <h6 class="text-muted">Due date: 25.02.2020 12:30</h6>
+                <h5 class="my-3">Before using <code>dataset-tools/video_framer.py</code> module</h5>
+                <p>Following questions need to be answered "<strong>yes</strong>" before you use <code>dataset-tools/video_framer.py</code> to pull frames out of your videos. </p><p><strong>What to do if you answer any of the following "no"?</strong> Go back to work.</p>
+                <ul class="list-group">
+                    <li class="list-group-item">Have you recorded at least 10 videos? <span class="text-muted font-italic">(5-10 seconds each.)</span></li>
+                    <li class="list-group-item">Have you cropped your videos to only contain the relevant parts?</li>
+                    <li class="list-group-item">Have you recorded plenty of videos in different conditions? <span class="text-muted font-italic">(Different spots, different lighting conditions different clothes etc.)</span></li>
+                    <li class="list-group-item">Are your videos representative of our products real-world use?</li>
+                    <li class="list-group-item">Have you gone crazy enough to make sure that our model will see many different hand positions during its training to become robust enough to detect almost any hand gesture?</li>
+                    <li class="list-group-item">Is the dataset folder structured as decided?</li>
+                    <li class="list-group-item">Have you placed your videos under <strong>dataset/videos</strong> directory?</li>
+                    <li class="list-group-item">Are you videos named as <strong>yourname_#.mp4</strong>? <span class="text-muted font-italic">(.mp4 extension is optional.)</span></li>
+                </ul>
+                <h5 class="mt-5 mb-3">...now go ahead and use <code>dataset-tools/video_framer.py</code> module with each of your videos</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Does your dataset/annotations directory contain <strong>350</strong> images?</li>
+                    <li class="list-group-item">Are the hand images named like <strong>hand_image_#.jpg</strong>?</li>
+                    <li class="list-group-item">Are the images numbered in your own, designated, range? <span class="text-muted font-italic">(e.g. hand_image_[351-700].jpg)</span></li>
+                    <li class="list-group-item">Are your image sizes <strong><= 256KB</strong>? <span class="text-muted font-italic">(play/experiment with -rf to get there.)</span></li>
+                    <li class="list-group-item bg-danger text-white">Scan the images and delete any image that is not necessary.</li>
+                </ul>
+                <h5 class="mt-5 mb-3">Now, open LabelImg</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Have you selected the <strong>YOLO</strong> format?</li>
+                    <li class="list-group-item">Have you selected the correct input and output directories?</li>
+                    <li class="list-group-item">Have you specified <strong>default label</strong> as <strong>"hand"</strong>?</li>
+                    <li class="list-group-item bg-info text-white">Get to annotating :)</li>
+                </ul>
+                <h5 class="mt-5 mb-3">After you are done annotating</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Are the images and .txt annotations in the correct directory? <span class="text-muted font-italic">(dataset/annotations)</span></li>
+                    <li class="list-group-item">Are all the annotations made in YOLO format? <span class="text-muted font-italic">(There should be a .txt file for each image with a content like "0 0.53455 0.67756 0.78587 0.91883")</span></li>
+                    <li class="list-group-item">Have you been careful enough?<span class="text-muted font-italic"> (Have you selected all the fingers etc.)</span></li>
+                </ul>
+                <h5 class="mt-5 mb-3">Finally</h5>
+                <ul>
+                    <li><h5 class="mt-4">Compress your dataset folder as a .zip file.</h5></li>
+                    <li><h5>Name it yourname_dataset.zip</h5></li>
+                    <li><h5>Upload it to Google Drive/SLATE folder.</h5></li>
+                    <li><h5 class="mb-5 text-success">Let others know you are done via WhatsApp CAMO Group Chat. DONE.</h5 ></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </body>
+</html>
