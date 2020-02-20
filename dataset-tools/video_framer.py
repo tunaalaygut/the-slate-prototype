@@ -28,6 +28,8 @@ parser.add_argument('-ext', '--extension', default="png",
                     help="Extension of the saved frames.")
 parser.add_argument('-s', '--skip', default=0, type=int,
                     help="Skip this amount of frames.")
+parser.add_argument('-sc', '--startcount', default=0, type=int,
+                    help="Start counting the frames from this number.")
 args = vars(parser.parse_args())
 
 video = cv2.VideoCapture(args["video"])
@@ -35,6 +37,7 @@ output_path = args["path"]
 filename = args["filename"]
 extension = args["extension"]
 skip = args["skip"]
+count = args["startcount"]
 
 # Create the output path if it does not exist.
 if not os.path.isdir(output_path):
@@ -42,8 +45,9 @@ if not os.path.isdir(output_path):
 
 
 def main():
+    global count
+
     print("Video Framer is now working.")
-    count = 0
     skip_counter = 0
 
     while True:
