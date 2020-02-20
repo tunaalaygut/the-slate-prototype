@@ -24,12 +24,16 @@ parser.add_argument('-o', '--path', required=True,
                     help="Output path of the snapped images.")
 parser.add_argument('-n', '--filename', required=True,
                     help="Filename to save the frames with.")
-parser.add_argument('-ext', '--extension', default="png",
+parser.add_argument('-ext', '--extension', default="jpg",
                     help="Extension of the saved frames.")
 parser.add_argument('-s', '--skip', default=0, type=int,
                     help="Skip this amount of frames.")
 parser.add_argument('-sc', '--startcount', default=0, type=int,
                     help="Start counting the frames from this number.")
+parser.add_argument('-r', '--resize', default=0, type=int,
+                    help="1 to resize the images. Size reduction purposes.")
+parser.add_argument('-rf', '--resizefactor', default=50, type=int,
+                    help="Size reduction percentage.")
 args = vars(parser.parse_args())
 
 video = cv2.VideoCapture(args["video"])
@@ -38,6 +42,8 @@ filename = args["filename"]
 extension = args["extension"]
 skip = args["skip"]
 count = args["startcount"]
+resize = bool(args["resize"])
+resize_factor = args["resizefactor"]
 
 # Create the output path if it does not exist.
 if not os.path.isdir(output_path):
@@ -54,16 +60,26 @@ def main():
         # Read a frame from the video.
         ret, frame = video.read()
 
-        if ret:
+        if ret:  # A frame is read.
             if skip_counter == skip:
-                # Save the frame to the disk.
+                # Create the filename.
                 temp_filename = f"{output_path}/{filename}_{count}.{extension}"
+
+                # Resize option is turned on.
+                if resize:
+                    scale = resize_factor / 100
+                    height, width, _ = frame.shape
+                    frame = cv2.resize(frame,
+                                       (int(width*scale), int(height*scale)),
+                                       interpolation=cv2.INTER_AREA)
+                # Save the image.
                 cv2.imwrite(temp_filename, cv2.rotate(frame,
                                                       cv2.ROTATE_90_CLOCKWISE))
+                # Print info message.
                 print(f"Image {temp_filename} is saved.")
 
                 count += 1
-                skip_counter = 0
+                skip_counter = 0  # Restart the skip counter.
             else:
                 skip_counter += 1
         else:
