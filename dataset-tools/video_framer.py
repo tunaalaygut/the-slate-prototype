@@ -73,8 +73,9 @@ def main():
                                        (int(width*scale), int(height*scale)),
                                        interpolation=cv2.INTER_AREA)
                 # Save the image.
-                cv2.imwrite(temp_filename, cv2.rotate(frame,
-                                                      cv2.ROTATE_90_CLOCKWISE))
+                # Depending on image's orientation, you can cv2.rotate the
+                # frame.
+                cv2.imwrite(temp_filename, frame)
                 # Print info message.
                 print(f"Image {temp_filename} is saved.")
 

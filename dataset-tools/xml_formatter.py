@@ -6,7 +6,7 @@ compatible with YOLOv3 and saves them into the directory.
 
 """
 WARNING: This module was being developed in order to use xml files with YOLOv3,
-as it turns out, labelImg has yolo format, so the development is stopped.
+as it turns out, labelImg has YOLO format, so the development is stopped.
 """
 
 # Imports
