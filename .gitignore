@@ -6,6 +6,6 @@ classifier/model_output/PEGI-*
 pegi.cfg
 pegi.data
 pegi.names
-weights/pegi.weights
+weights/
 yolov3_tf2/
 load_weights.py
