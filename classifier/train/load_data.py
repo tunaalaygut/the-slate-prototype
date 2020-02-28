@@ -17,7 +17,7 @@ import cv2
 import random
 import argparse
 from tensorflow.keras import utils
-from classifier.pickle_utility import put_pickle_object
+from classifier.train.pickle_utility import put_pickle_object
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -104,8 +104,8 @@ def main():
 
 def store_data():
     # Save the data so you don't have to load it every time.
-    if not (os.path.isdir("pickles")):
-        os.mkdir("pickles")
+    if not (os.path.isdir("../pickles")):
+        os.mkdir("../pickles")
 
     put_pickle_object(X, "pickles/X.pickle")
     put_pickle_object(classes, "pickles/classes.pickle")

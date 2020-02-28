@@ -8,9 +8,8 @@ batch size, number of epochs and validation split.
 import os
 import argparse
 import time
-from classifier import pegi_architecture
-from classifier.pickle_utility import get_pickle_object
-from classifier import model_info
+from classifier.train import pegi_architecture, model_info
+from classifier.train.pickle_utility import get_pickle_object
 from tensorflow.keras.callbacks import TensorBoard
 
 # Information
@@ -38,7 +37,7 @@ batch_size = args["batchsize"]
 epochs = args["epochs"]
 validation_split = args["validationsplit"] / 100
 
-output_dir = "model_output"
+output_dir = "../model_output"
 
 x = []
 y = []

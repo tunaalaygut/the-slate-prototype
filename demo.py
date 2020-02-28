@@ -23,7 +23,7 @@ from detector import sampler
 from classifier import model_service
 from detector.data_gatherer import DataGatherer
 from detector import position_provider
-from classifier.pickle_utility import get_pickle_object
+from classifier.train.pickle_utility import get_pickle_object
 
 import cv2
 import argparse

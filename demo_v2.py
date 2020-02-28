@@ -8,7 +8,7 @@ from detector.sampler import get_sample_image
 from classifier import model_service
 from tensorflow import keras
 import cv2
-from classifier.pickle_utility import get_pickle_object
+from classifier.train.pickle_utility import get_pickle_object
 
 # Information
 __author__ = "Tuna ALAYGUT"
