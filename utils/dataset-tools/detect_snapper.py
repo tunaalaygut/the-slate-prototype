@@ -4,9 +4,9 @@ and only snaps images of the hands.
 """
 
 # Imports
-from detector.eye import Eye
+from utils.eye import Eye
 from detector.hand_detector import HandDetector
-from detector import sampler
+from utils import sampler
 import cv2
 import argparse
 import os

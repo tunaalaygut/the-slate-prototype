@@ -2,9 +2,9 @@
 """
 
 # Imports
-from detector.eye import Eye
+from utils.eye import Eye
 from detector.hand_detector import HandDetector
-from detector.sampler import get_sample_image
+from utils.sampler import get_sample_image
 from classifier import model_service
 from tensorflow import keras
 import cv2

@@ -1,6 +1,6 @@
 """
 hand_detector.py: This module is used to detects hands in a given frame and
-return the positions related to the detected hands.
+return the positions related to the detected hands. Uses OpenCV!
 """
 
 # Imports

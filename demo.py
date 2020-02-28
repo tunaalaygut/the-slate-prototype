@@ -15,14 +15,11 @@ stores it to the specified path with the specified filename.
 """
 
 # Imports
-from detector.eye import Eye
-from detector import calibration
-from detector import skin_detector
-from detector import drawing_utility
-from detector import sampler
+from utils.eye import Eye
 from classifier import model_service
-from detector.data_gatherer import DataGatherer
-from detector import position_provider
+from utils.data_gatherer import DataGatherer
+from utils import position_provider, drawing_utility, sampler, skin_detector, \
+    calibration
 from classifier.train.pickle_utility import get_pickle_object
 
 import cv2

@@ -8,7 +8,7 @@ consecutively starting from 0. Starting count can be given as a parameter.
 import cv2
 import os
 import argparse
-from detector.eye import Eye
+from utils.eye import Eye
 
 # Information
 __author__ = "Tuna ALAYGUT"
