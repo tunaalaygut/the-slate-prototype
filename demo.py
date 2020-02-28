@@ -20,7 +20,7 @@ from detector import calibration
 from detector import skin_detector
 from detector import drawing_utility
 from detector import sampler
-from detector import model_service
+from classifier import model_service
 from detector.data_gatherer import DataGatherer
 from detector import position_provider
 from classifier.pickle_utility import get_pickle_object
