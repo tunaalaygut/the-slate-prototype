@@ -13,7 +13,7 @@ __status__ = "Development"
 __email__ = "alaygut@gmail.com"
 
 
-class HandDetector:
+class HILMI:  # Uses OpenCV
     """
     Initialize an instance of this class by giving a (pre-trained) weights file
     and a config file. Then, you can call the detect function to make
@@ -67,7 +67,7 @@ class HandDetector:
 
         indexes = dnn.NMSBoxes(boxes, confidences, 0.4, 0.6)
 
-        return indexes, boxes
+        return indexes, boxes, confidences
 
 
 def main():

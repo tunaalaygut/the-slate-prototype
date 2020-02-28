@@ -2,18 +2,48 @@
 
 """
 model_service.py: Module that, takes a .h5 model (pegi, in our case) and an
-image and outputs the model's prediction on that image.
+image and outputs the model's prediction on that image. It also has the PEGI
+class which uses this module's prediction function to make predictions.
 """
 
 # Imports
 import cv2
 import numpy as np
+from tensorflow import keras
 
 # Information
 __author__ = "Tuna ALAYGUT"
 __copyright__ = "Copyright 2020, The Slate Project"
 __status__ = "Development"
 __email__ = "alaygut@gmail.com"
+
+
+class PEGI:  # Primary, Excellent Gesture Identifier
+    """
+    PEGI class. Contains the model which is a .h5 model,
+    loaded from the model_path.
+    """
+    def __init__(self, model_path, image_size, labels, color_space):
+        self.model = keras.models.load_model(model_path)
+        self.image_size = image_size
+        self.labels = labels
+        self.color_space = color_space
+
+    def predict(self, image):
+        """
+        Uses classes model to make prediction on an image.
+        Args:
+            image: Image to perdict.
+
+        Returns:
+            label: What the model predicted.
+            percentage: Model's confidence on the prediction.
+        """
+        return get_prediction(self.model,
+                              image,
+                              self.image_size,
+                              self.labels,
+                              self.color_space)
 
 
 def get_prediction(model, image, image_size, labels, color_space):
