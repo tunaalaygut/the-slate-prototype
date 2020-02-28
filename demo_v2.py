@@ -2,8 +2,9 @@
 """
 
 # Imports
+from classifier.model_service import PEGI
 from utils.eye import Eye
-from detector.hand_detector import HandDetector
+from detector.hand_detector import HILMI
 from utils.sampler import get_sample_image
 from classifier import model_service
 from tensorflow import keras
@@ -19,17 +20,31 @@ __email__ = "alaygut@gmail.com"
 
 # Global variables
 eye = Eye()
-hand_detector = HandDetector("pegi.weights", "pegi.cfg")
-model = keras.models.load_model("classifier/model_output/pegi.h5")
-image_size = get_pickle_object("classifier/train/pickles/image_size.pickle")
-classes = get_pickle_object("classifier/train/pickles/classes.pickle")
+
+# Regarding HILMI
+weights_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
+              "detector/weights/pegi.weights"
+config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/pegi.cfg"
+
+hilmi = HILMI(weights_dir, config_dir)
+
+# Regarding PEGI
+pickle_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
+             "classifier/train/pickles"
+model_path = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
+             "classifier/model_output/pegi.h5"
+
+pegi = PEGI(model_path,
+            get_pickle_object(f"{pickle_dir}/image_size.pickle"),
+            get_pickle_object(f"{pickle_dir}/classes.pickle"),
+            cv2.COLOR_BGR2GRAY)
 
 
 def main():
     while True:
         image = eye.see()
 
-        indexes, boxes = hand_detector.detect(image)
+        indexes, boxes, confidences = hilmi.detect(image)
 
         for i in range(len(boxes)):
             if i in indexes:
@@ -39,12 +54,7 @@ def main():
                 top_left = x, y
                 bottom_right = x+w, y+h
                 sample = get_sample_image(image, (top_left, bottom_right))
-                result = model_service.get_formatted_prediction(model,
-                                                                sample,
-                                                                image_size,
-                                                                classes,
-                                                                cv2.
-                                                                COLOR_BGR2GRAY)
+                result = pegi.predict(sample)
                 print(result)
 
         cv2.imshow("The SLATE Demo", image)

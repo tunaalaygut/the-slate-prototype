@@ -9,3 +9,4 @@ pegi.names
 detector/weights/
 detector/yolov3_tf2/
 detector/weights/load_weights.py
+classifier/train/__pycache__/
