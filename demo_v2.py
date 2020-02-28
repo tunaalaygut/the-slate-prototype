@@ -6,8 +6,6 @@ from classifier.model_service import PEGI
 from utils.eye import Eye
 from detector.hand_detector import HILMI
 from utils.sampler import get_sample_image
-from classifier import model_service
-from tensorflow import keras
 import cv2
 from classifier.train.pickle_utility import get_pickle_object
 

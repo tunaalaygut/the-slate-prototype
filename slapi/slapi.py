@@ -14,7 +14,6 @@ from flask import Flask, \
 from flask_cors import CORS
 import cv2
 import numpy
-import os
 # Main actors
 from classifier.model_service import PEGI
 from detector.hand_detector import HILMI
@@ -104,4 +103,3 @@ def __create_json(indexes, boxes, confidences, frame):
                 "confidence": confidence * detect_confidence
             })
     return {"gesture": responses}
-
