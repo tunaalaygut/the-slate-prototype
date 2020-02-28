@@ -104,8 +104,8 @@ def main():
 
 def store_data():
     # Save the data so you don't have to load it every time.
-    if not (os.path.isdir("../pickles")):
-        os.mkdir("../pickles")
+    if not (os.path.isdir("pickles")):
+        os.mkdir("pickles")
 
     put_pickle_object(X, "pickles/X.pickle")
     put_pickle_object(classes, "pickles/classes.pickle")

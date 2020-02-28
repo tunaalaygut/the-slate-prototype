@@ -91,8 +91,8 @@ high_threshold = np.array([235, 173, 127], dtype="uint8")
 
 window_title = "P.E.G.I. & Skin Detection Demo"
 
-image_size = get_pickle_object("./classifier/pickles/image_size.pickle")
-classes = get_pickle_object("./classifier/pickles/classes.pickle")
+image_size = get_pickle_object("classifier/train/pickles/image_size.pickle")
+classes = get_pickle_object("classifier/train/pickles/classes.pickle")
 
 model = keras.models.load_model(args["model"])
 

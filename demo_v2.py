@@ -21,8 +21,8 @@ __email__ = "alaygut@gmail.com"
 eye = Eye()
 hand_detector = HandDetector("pegi.weights", "pegi.cfg")
 model = keras.models.load_model("classifier/model_output/pegi.h5")
-image_size = get_pickle_object("./classifier/pickles/image_size.pickle")
-classes = get_pickle_object("./classifier/pickles/classes.pickle")
+image_size = get_pickle_object("classifier/train/pickles/image_size.pickle")
+classes = get_pickle_object("classifier/train/pickles/classes.pickle")
 
 
 def main():
