@@ -20,7 +20,9 @@ class HILMI:  # Uses OpenCV
     detections on the frame. A detection confidence can be specified.
     """
     def __init__(self, weights, config, confidence=0.5):
-        self.network = dnn.readNet(weights, config)
+        self.network = dnn.readNetFromDarknet(config, weights)
+        self.network.setPreferableBackend(dnn.DNN_BACKEND_CUDA)
+        self.network.setPreferableTarget(dnn.DNN_TARGET_CUDA)
         layer_names = self.network.getLayerNames()
         self.output_layers = [layer_names[i[0] - 1]
                               for i in self.network.getUnconnectedOutLayers()]
@@ -37,10 +39,12 @@ class HILMI:  # Uses OpenCV
             multiple hand detections.)
             boxes: location(s) of the hand(s) in the frame.
         """
+
         # ref: https://github.com/darshanadakane/yolov3_objectdetection
         height, width, _ = image.shape
-        blob = dnn.blobFromImage(image, 0.00392, (416, 416), (0, 0, 0),
-                                 True, crop=False)
+        blob = dnn.blobFromImage(image, 0.00392, (416, 416),
+                                 swapRB=True,
+                                 crop=False)
         self.network.setInput(blob)
         outs = self.network.forward(self.output_layers)
 
@@ -68,11 +72,3 @@ class HILMI:  # Uses OpenCV
         indexes = dnn.NMSBoxes(boxes, confidences, 0.4, 0.6)
 
         return indexes, boxes, confidences
-
-
-def main():
-    print("Hello, world!")
-
-
-if __name__ == "__main__":
-    main()
