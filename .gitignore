@@ -6,6 +6,9 @@ classifier/model_output/PEGI-*
 pegi.cfg
 pegi.data
 pegi.names
+hilmi-test.cfg
+detector/weights/hilmi.weights
+hilmi.names
 detector/weights/
 detector/yolov3_tf2/
 detector/weights/load_weights.py

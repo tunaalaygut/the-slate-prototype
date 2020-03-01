@@ -8,6 +8,7 @@ from detector.hand_detector import HILMI
 from utils.sampler import get_sample_image
 import cv2
 from classifier.train.pickle_utility import get_pickle_object
+from imutils.video import FPS
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -31,13 +32,14 @@ pegi = PEGI(model_path,
 
 # Regarding HILMI
 weights_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
-              "detector/weights/pegi.weights"
-config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/pegi.cfg"
+              "detector/weights/hilmi.weights"
+config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/hilmi-test.cfg"
 
 hilmi = HILMI(weights_dir, config_dir, use_gpu=True)
 
 
 def main():
+    fps = FPS().start()
     while True:
         image = eye.see()
 
@@ -55,14 +57,16 @@ def main():
                 print(result)
 
         cv2.imshow("The SLATE Demo", image)
-
+        fps.update()
         key = cv2.waitKey(1)
 
         if key == 27:
             break
 
+    fps.stop()
     eye.release()
     cv2.destroyAllWindows()
+    print(f"FPS: {fps.fps()}")
 
 
 if __name__ == "__main__":
