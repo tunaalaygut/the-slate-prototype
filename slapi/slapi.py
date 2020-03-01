@@ -5,8 +5,6 @@ interpretation.
 """
 
 # Imports
-import time
-
 from flask import Flask, \
     request,\
     jsonify, \
@@ -30,8 +28,8 @@ __email__ = "alaygut@gmail.com"
 
 # Regarding HILMI
 weights_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
-              "detector/weights/pegi.weights"
-config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/pegi.cfg"
+              "detector/weights/hilmi.weights"
+config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/hilmi-test.cfg"
 
 hilmi = HILMI(weights_dir, config_dir)
 
@@ -60,6 +58,16 @@ def interpret():
     gesture that it sees in the POSTed frame.
 
     Returns:
+    A .json respond for each gesture in the following format:
+        interpretation{
+            label: detected gesture's class label
+            x1: x of the top left point of the bounding box
+            y1: y of the top left point of the bounding box
+            x2: x of the bottom right point of the bounding box
+            y2: y of the bottom right point of the bounding box
+            confidence: confidence of the interpretation.
+                (detection confidence * classification confidence)
+        }
 
     """
 
