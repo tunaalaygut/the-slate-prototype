@@ -10,6 +10,7 @@ class which uses this module's prediction function to make predictions.
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -23,11 +24,13 @@ class PEGI:  # Primary, Excellent Gesture Identifier
     PEGI class. Contains the model which is a .h5 model,
     loaded from the model_path.
     """
-    def __init__(self, model_path, image_size, labels, color_space):
-        self.model = load_model(model_path)
-        self.image_size = image_size
-        self.labels = labels
-        self.color_space = color_space
+    def __init__(self, model_path, image_size, labels,
+                 color_space=cv2.COLOR_BGR2GRAY):
+        with tf.device('/cpu:0'):
+            self.model = load_model(model_path)
+            self.image_size = image_size
+            self.labels = labels
+            self.color_space = color_space
 
     def predict(self, image):
         """

@@ -11,7 +11,6 @@ from flask import Flask, \
     request,\
     jsonify, \
     abort
-from flask_cors import CORS
 import cv2
 import numpy
 # Main actors
@@ -44,13 +43,11 @@ model_path = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
 
 pegi = PEGI(model_path,
             get_pickle_object(f"{pickle_dir}/image_size.pickle"),
-            get_pickle_object(f"{pickle_dir}/classes.pickle"),
-            cv2.COLOR_BGR2GRAY)
+            get_pickle_object(f"{pickle_dir}/classes.pickle"))
 
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
-CORS(app)
 
 
 @app.route("/", methods=['POST'])
@@ -71,17 +68,8 @@ def interpret():
                          cv2.IMREAD_UNCHANGED)
 
     indexes, boxes, confidences = hilmi.detect(frame)
-    try:
-        return jsonify({
-            "interpretation": __create_json(indexes,
-                                            boxes,
-                                            confidences,
-                                            frame)}), 200
-    except FileNotFoundError:
-        abort(404)
 
-
-def __create_json(indexes, boxes, confidences, frame):
+    response = []
     responses = []
     for i in range(len(boxes)):
         if i in indexes:
@@ -100,6 +88,12 @@ def __create_json(indexes, boxes, confidences, frame):
                 "y1": top_left[1],
                 "x2": bottom_right[0],
                 "y2": bottom_right[1],
-                "confidence": confidence * detect_confidence
+                "confidence": round(confidence * detect_confidence, 2)
             })
-    return {"gesture": responses}
+    response.append(responses)
+
+    try:
+        return jsonify({"interpretation": responses}), 200
+    except FileNotFoundError:
+        abort(404)
+

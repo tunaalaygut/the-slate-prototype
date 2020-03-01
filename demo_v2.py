@@ -19,13 +19,6 @@ __email__ = "alaygut@gmail.com"
 # Global variables
 eye = Eye()
 
-# Regarding HILMI
-weights_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
-              "detector/weights/pegi.weights"
-config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/pegi.cfg"
-
-hilmi = HILMI(weights_dir, config_dir)
-
 # Regarding PEGI
 pickle_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
              "classifier/train/pickles"
@@ -34,8 +27,14 @@ model_path = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
 
 pegi = PEGI(model_path,
             get_pickle_object(f"{pickle_dir}/image_size.pickle"),
-            get_pickle_object(f"{pickle_dir}/classes.pickle"),
-            cv2.COLOR_BGR2GRAY)
+            get_pickle_object(f"{pickle_dir}/classes.pickle"))
+
+# Regarding HILMI
+weights_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/" \
+              "detector/weights/pegi.weights"
+config_dir = "C:/Users/alaygut/Desktop/the-slate-prototype/pegi.cfg"
+
+hilmi = HILMI(weights_dir, config_dir, use_gpu=True)
 
 
 def main():
