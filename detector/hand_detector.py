@@ -19,10 +19,11 @@ class HILMI:  # Uses OpenCV
     and a config file. Then, you can call the detect function to make
     detections on the frame. A detection confidence can be specified.
     """
-    def __init__(self, weights, config, confidence=0.5):
+    def __init__(self, weights, config, confidence=0.5, use_gpu=True):
         self.network = dnn.readNetFromDarknet(config, weights)
-        self.network.setPreferableBackend(dnn.DNN_BACKEND_CUDA)
-        self.network.setPreferableTarget(dnn.DNN_TARGET_CUDA)
+        if use_gpu:
+            self.network.setPreferableBackend(dnn.DNN_BACKEND_CUDA)
+            self.network.setPreferableTarget(dnn.DNN_TARGET_CUDA)
         layer_names = self.network.getLayerNames()
         self.output_layers = [layer_names[i[0] - 1]
                               for i in self.network.getUnconnectedOutLayers()]
