@@ -9,7 +9,7 @@ class which uses this module's prediction function to make predictions.
 # Imports
 import cv2
 import numpy as np
-from tensorflow import keras
+from tensorflow.keras.models import load_model
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -24,7 +24,7 @@ class PEGI:  # Primary, Excellent Gesture Identifier
     loaded from the model_path.
     """
     def __init__(self, model_path, image_size, labels, color_space):
-        self.model = keras.models.load_model(model_path)
+        self.model = load_model(model_path)
         self.image_size = image_size
         self.labels = labels
         self.color_space = color_space
