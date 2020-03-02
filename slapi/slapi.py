@@ -88,7 +88,7 @@ def interpret():
             sample = get_sample_image(frame, (top_left, bottom_right))
 
             # PEGI works here
-            label, confidence = pegi.predict(sample)
+            label, confidence = pegi.classify(sample)
 
             responses.append({
                 "label": label,

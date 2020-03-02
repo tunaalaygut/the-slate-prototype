@@ -53,7 +53,7 @@ def main():
                 top_left = x, y
                 bottom_right = x+w, y+h
                 sample = get_sample_image(image, (top_left, bottom_right))
-                result = pegi.predict(sample)
+                result = pegi.classify(sample)
                 print(result)
 
         cv2.imshow("The SLATE Demo", image)

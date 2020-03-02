@@ -32,7 +32,7 @@ class PEGI:  # Primary, Excellent Gesture Identifier
             self.labels = labels
             self.color_space = color_space
 
-    def predict(self, image):
+    def classify(self, image):
         """
         Uses classes model to make prediction on an image.
         Args:
@@ -71,7 +71,7 @@ def get_prediction(model, image, image_size, labels, color_space):
     # What does this line DO?
     image = image.reshape(1, image.shape[0], image.shape[1], 1)
 
-    prediction = model.predict(image)
+    prediction = model.classify(image)
 
     index = prediction.argmax(axis=1)[0]
     label = labels[index]
