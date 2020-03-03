@@ -34,7 +34,7 @@ class PEGI:  # Primary, Excellent Gesture Identifier
 
     def classify(self, image):
         """
-        Uses classes model to make prediction on an image.
+        Uses class' model to make prediction on an image.
         Args:
             image: Image to predict.
 
@@ -71,7 +71,7 @@ def get_prediction(model, image, image_size, labels, color_space):
     # What does this line DO?
     image = image.reshape(1, image.shape[0], image.shape[1], 1)
 
-    prediction = model.classify(image)
+    prediction = model.predict(image)
 
     index = prediction.argmax(axis=1)[0]
     label = labels[index]

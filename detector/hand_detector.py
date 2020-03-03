@@ -31,7 +31,8 @@ class HILMI:  # Uses OpenCV
 
     def detect(self, image):
         """
-
+        Takes an image and, using the neural network, provides the locations of
+        human hands in that image.
         Args:
             image: image/frame to make the detections on.
 
