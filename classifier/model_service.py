@@ -36,7 +36,7 @@ class PEGI:  # Primary, Excellent Gesture Identifier
         """
         Uses classes model to make prediction on an image.
         Args:
-            image: Image to perdict.
+            image: Image to predict.
 
         Returns:
             label: What the model predicted.
