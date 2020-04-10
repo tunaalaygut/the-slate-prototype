@@ -29,6 +29,17 @@ pip install flask
 pip install flask_cors
 ```
 
+### Installing CUDA and cuDNN
+To take advantage of OpenCV’s DNN module, OpenCV needs to be built from source,
+with CUDA support. However, to build it with CUDA support, CUDA 
+(correct version of it, **not** the latest) must be installed in the system. 
+(To check which version the install depending on the system’s GPU, please check 
+[here](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-hardware))
+
+1. Download and install the correct CUDA version.
+2. After CUDA is installed, download cuDNN libraries and extract them to CUDA’s installation directory.
+
+
 ### Installing OpenCV 4.2.0
 To make OpenCV work (the way it intended to), it should be built from the source with CUDA (with cuDNN) support. Note that installing the opencv-python with pip will **not** be sufficient.    
 To build OpenCV from the source
