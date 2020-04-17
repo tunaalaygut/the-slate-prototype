@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """
-train_pegi.py: Trains the model with the specified architecture using the given
-batch size, number of epochs and validation split.
+train_pegi.py: Trains the model with the specified architecture using the given batch size, number of epochs and validation split.
 """
 
 # Imports

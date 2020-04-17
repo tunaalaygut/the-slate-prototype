@@ -9,6 +9,7 @@ from flask import Flask, \
     request,\
     jsonify, \
     abort
+from flask_cors import CORS
 import cv2
 import numpy
 # Main actors
@@ -46,6 +47,7 @@ pegi = PEGI(model_path,
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+CORS(app)
 
 
 @app.route("/", methods=['POST'])
@@ -71,7 +73,7 @@ def interpret():
 
     """
 
-    frame = cv2.imdecode(numpy.fromstring(request.files['frame'].read(),
+    frame = cv2.imdecode(numpy.frombuffer(request.files['frame'].read(),
                                           numpy.uint8),
                          cv2.IMREAD_UNCHANGED)
 
@@ -96,7 +98,7 @@ def interpret():
                 "y1": top_left[1],
                 "x2": bottom_right[0],
                 "y2": bottom_right[1],
-                "confidence": round(confidence * detect_confidence, 2)
+                "confidence": round(detect_confidence, 2)
             })
     response.append(responses)
 
@@ -105,3 +107,6 @@ def interpret():
     except FileNotFoundError:
         abort(404)
 
+
+if __name__ == "__main__":
+    app.run(debug=True)

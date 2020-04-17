@@ -1,10 +1,11 @@
 """
-hand_detector.py: This module is used to detects hands in a given frame and
+hand_detector.py: This module is used to detect hands in a given frame and
 return the positions related to the detected hands. Uses OpenCV!
 """
 
 # Imports
 from cv2 import dnn
+import numpy as np
 
 # Information
 __author__ = "Tuna ALAYGUT"
@@ -58,18 +59,14 @@ class HILMI:  # Uses OpenCV
                 scores = detection[5:]
                 confidence = scores[0]
 
-                # Hand detected.
-                if confidence > self.confidence:
-                    center_x = int(detection[0] * width)
-                    center_y = int(detection[1] * height)
-                    w = int(detection[2] * width)
-                    h = int(detection[3] * height)
+                box = detection[0:4] * np.array([width, height, width, height])
+                (center_x, center_y, w, h) = box.astype("int")
 
-                    x = int(center_x - w / 2)
-                    y = int(center_y - h / 2)
+                x = int(center_x - w / 2)
+                y = int(center_y - h / 2)
 
-                    boxes.append([x, y, w, h])
-                    confidences.append(float(confidence))
+                boxes.append([x, y, int(w), int(h)])
+                confidences.append(float(confidence))
 
         indexes = dnn.NMSBoxes(boxes, confidences, 0.4, 0.6)
 

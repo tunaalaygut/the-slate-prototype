@@ -9,8 +9,8 @@ class which uses this module's prediction function to make predictions.
 # Imports
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
 import tensorflow as tf
+from tensorflow.keras.models import load_model
 
 # Information
 __author__ = "Tuna ALAYGUT"
